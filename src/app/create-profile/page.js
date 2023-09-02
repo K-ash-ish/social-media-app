@@ -3,15 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-
+import { Form } from "@/components/ui/form";
 import FormFieldComp from "@/components/FormFieldComp";
 import {
   Card,
@@ -40,7 +32,24 @@ function ProfileForm() {
   });
 
   function onSubmit(values) {
-    console.log(values);
+    const { bio, name, userHandle, profilePic } = values;
+    fetch("http://localhost:3000/api/create-profile", {
+      body: JSON.stringify({
+        bio,
+        name,
+        userHandle,
+        profilePic,
+      }),
+      method: "POST",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 
   return (
