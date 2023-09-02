@@ -15,12 +15,7 @@ function FormFieldComp({ form, fieldName, type }) {
         <FormItem className="capitalize">
           <FormLabel>{fieldName}</FormLabel>
           <FormControl>
-            <Input
-              placeholder={fieldName}
-              type={`${type || +""}`}
-              className="capitalize"
-              {...field}
-            />
+            <Input placeholder={fieldName} type={`${type || +""}`} {...field} />
           </FormControl>
         </FormItem>
       )}
