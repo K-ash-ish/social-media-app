@@ -2,16 +2,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import Router from "next/router";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -20,32 +13,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import FormFieldComp from "@/components/FormFieldComp";
+import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 });
 
-function onSubmit(values) {
-  const { email, password } = values;
-  fetch("http://localhost:3000/api/login", {
-    body: JSON.stringify({
-      email,
-      password,
-    }),
-    method: "POST",
-    credentials: "include",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.message === null) {
-        return console.log("Null");
-      }
-      console.log("not null");
-    });
-}
-
 function Login() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,6 +30,29 @@ function Login() {
       password: "",
     },
   });
+
+  function onSubmit(values) {
+    const { email, password } = values;
+    setIsLoading(true);
+    fetch("http://localhost:3000/api/login", {
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+      method: "POST",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setIsLoading(false);
+        if (data.message === null) {
+          return router.push("/create-profile");
+        }
+        console.log(data);
+        return router.push("/feed");
+      });
+  }
+
   return (
     <div className="flex h-screen items-center">
       <Card className="w-[350px] mx-auto  ">
@@ -65,7 +65,9 @@ function Login() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormFieldComp form={form} fieldName="email" />
               <FormFieldComp form={form} fieldName="password" type="password" />
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Loading" : "Submit"}
+              </Button>
             </form>
           </Form>
         </CardContent>
