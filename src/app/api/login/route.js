@@ -12,14 +12,20 @@ export async function POST(req) {
         equals: email,
       },
     },
+    include: {
+      profile: true,
+    },
   });
 
   if (reqUser) {
     const isValidPassword = await compare(reqUser.password, password);
+    console.log(reqUser);
     if (isValidPassword) {
       const token = await sign({
         accessLevel: "user",
         email: reqUser.email,
+        id: reqUser.id,
+        profileId: reqUser.profile.id || null,
       });
       const oneDay = 24 * 60 * 60 * 1000;
 
