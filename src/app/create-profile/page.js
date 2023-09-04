@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   bio: z.string(),
@@ -21,6 +22,7 @@ const formSchema = z.object({
 });
 
 function ProfileForm() {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -33,7 +35,7 @@ function ProfileForm() {
 
   function onSubmit(values) {
     const { bio, name, userHandle, profilePic } = values;
-    fetch("http://localhost:3000/api/create-profile", {
+    fetch("api/create-profile", {
       body: JSON.stringify({
         bio,
         name,
@@ -45,7 +47,11 @@ function ProfileForm() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        if (data.message === "success") {
+          router.push("/feed");
+        } else {
+          router.push("/login");
+        }
       })
       .catch((e) => {
         console.error(e);
