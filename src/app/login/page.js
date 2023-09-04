@@ -34,7 +34,7 @@ function Login() {
   function onSubmit(values) {
     const { email, password } = values;
     setIsLoading(true);
-    fetch("http://localhost:3000/api/login", {
+    fetch("api/login", {
       body: JSON.stringify({
         email,
         password,
@@ -48,7 +48,6 @@ function Login() {
         if (data.message === null) {
           return router.push("/create-profile");
         }
-        console.log(data);
         return router.push("/feed");
       });
   }
