@@ -20,15 +20,13 @@ function OtherUserProfile({ params }) {
       const data = await res.json();
 
       setUserData(data?.message);
-      console.log(userData);
-      if (userData === "redirect user") {
-        console.log("here");
-        router.push("/profile");
-        // setUserData(data?.userData);
-        // setIsEditable(true);
-      }
     })();
   }, []);
+  useEffect(() => {
+    if (userData === "redirect user") {
+      router.push("/profile");
+    }
+  }, [userData]);
   return <ProfilePage userData={userData} isEditable={isEditable} />;
 }
 
