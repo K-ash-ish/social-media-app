@@ -43,8 +43,7 @@ function CreatePost() {
 
   function onSubmit(values) {
     const { title, content } = values;
-    console.log(title, content);
-    fetch("http://localhost:3000/api/create-post", {
+    fetch("/api/create-post", {
       body: JSON.stringify({
         title,
         content,
@@ -54,8 +53,7 @@ function CreatePost() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        router.push("/profile");
+        // router.push("/profile");
       })
       .catch((e) => {
         console.error(e);
