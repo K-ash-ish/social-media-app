@@ -30,6 +30,5 @@ export async function GET() {
       },
     },
   });
-  console.log(userProfile);
   return NextResponse.json({ message: userProfile }, { status: 200 });
 }
