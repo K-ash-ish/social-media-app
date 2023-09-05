@@ -16,7 +16,6 @@ export async function POST(req) {
       profile: true,
     },
   });
-
   if (reqUser) {
     const isValidPassword = await compare(reqUser.password, password);
     if (isValidPassword) {
@@ -24,14 +23,15 @@ export async function POST(req) {
         accessLevel: "user",
         email: reqUser.email,
         id: reqUser.id,
+        userHandle: reqUser.profile?.userHandle,
         profileId: reqUser.profile?.id || null,
       });
-      const oneDay = 24 * 60 * 60 * 1000;
+      const oneHour = 60 * 60 * 1000;
       cookies().set({
         name: "token",
         value: token,
         httpOnly: true,
-        expires: Date.now() + oneDay,
+        expires: Date.now() + oneHour,
       });
       const userProfile = await prisma.profile.findFirst({
         where: {
