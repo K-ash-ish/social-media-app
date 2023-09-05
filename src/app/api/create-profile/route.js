@@ -10,7 +10,6 @@ export async function POST(req) {
     return NextResponse.json({ error: "Not authorised" }, { status: 401 });
   }
   const isTokenverified = await verify(token);
-  console.log(isTokenverified);
   if (!isTokenverified) {
     return NextResponse.json({ error: "Not authorised" }, { status: 400 });
   }
