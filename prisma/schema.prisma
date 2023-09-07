@@ -38,17 +38,19 @@ model Profile {
   userId Int     @unique
 
   posts   Post[]
+
   following Follow[] @relation("following")
   followers Follow[] @relation("follower")
 }
 model Follow {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt 
 
-  followingId Int
+  followingId Int @unique
   following   Profile @relation("following", fields: [followingId], references: [id])
-  followerId Int
+  
+  followerId Int @unique
   follower Profile @relation("follower",fields: [followerId], references: [id])
 }
 
