@@ -47,10 +47,10 @@ model Follow {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
 
-  followingId Int @unique
+  followingId Int 
   following   Profile @relation("following", fields: [followingId], references: [id])
-  
-  followerId Int @unique
+
+  followerId Int 
   follower Profile @relation("follower",fields: [followerId], references: [id])
 }
 
