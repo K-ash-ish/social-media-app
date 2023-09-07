@@ -20,12 +20,39 @@ export async function POST(req) {
       posts: true,
     },
   });
-  // if (isTokenVerified && isTokenVerified?.payload?.id === userProfile.userId) {
-  //   console.log("asdf");
-  //   return NextResponse.json({
-  //     message: "redirect user",
-  //     userData: userProfile,
-  //   });
-  // }
-  return NextResponse.json({ message: userProfile }, { status: 200 });
+  // searched user id userProfile.id
+  // current user profileid
+  if (userProfile) {
+    const checkFollow = await prisma.follow.findFirst({
+      where: {
+        AND: [
+          {
+            followingId: {
+              equals: isTokenVerified?.payload?.profileId,
+            },
+          },
+          {
+            followerId: {
+              equals: userProfile.id,
+            },
+          },
+        ],
+      },
+    });
+    if (checkFollow) {
+      userProfile.following = true;
+      // if (isTokenVerified && isTokenVerified?.payload?.id === userProfile.userId) {
+      //   console.log("asdf");
+      //   return NextResponse.json({
+      //     message: "redirect user",
+      //     userData: userProfile,
+      //   });
+      // }
+      return NextResponse.json(
+        { message: { ...userProfile, ...checkFollow } },
+        { status: 200 }
+      );
+    }
+  }
+  return NextResponse.json({ message: "Not found" }, { status: 200 });
 }

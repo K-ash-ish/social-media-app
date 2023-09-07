@@ -8,6 +8,7 @@ function OtherUserProfile({ params }) {
   const router = useRouter();
   const [userData, setUserData] = useState();
   const [isEditable, setIsEditable] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
   useEffect(() => {
     (async () => {
       const res = await fetch("/api/profile/userHandle", {
@@ -18,8 +19,10 @@ function OtherUserProfile({ params }) {
         credentials: "include",
       });
       const data = await res.json();
-
       setUserData(data?.message);
+      if (data?.message.following) {
+        setIsFollowing(true);
+      }
     })();
   }, []);
   useEffect(() => {
@@ -27,7 +30,18 @@ function OtherUserProfile({ params }) {
       router.push("/profile");
     }
   }, [userData]);
-  return <ProfilePage userData={userData} isEditable={isEditable} />;
+  console.log(userData);
+  if (userData === "Not found") {
+    return "User Not Found";
+  }
+  return (
+    <ProfilePage
+      userData={userData}
+      isEditable={isEditable}
+      isFollowing={isFollowing}
+      setIsFollowing={setIsFollowing}
+    />
+  );
 }
 
 export default OtherUserProfile;

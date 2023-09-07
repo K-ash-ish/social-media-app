@@ -2,10 +2,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import CreatePost from "./CreatePost";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-function ProfilePage({ userData, isEditable }) {
+function ProfilePage({ userData, isEditable, isFollowing, setIsFollowing }) {
+  function onSubmit() {
+    fetch("/api/follow", {
+      method: "POST",
+      body: JSON.stringify({
+        userData,
+      }),
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setIsFollowing(!isFollowing);
+      });
+  }
   return userData === "Not Authorised" ? (
     <h1>Not Authorised</h1>
   ) : (
@@ -25,17 +39,25 @@ function ProfilePage({ userData, isEditable }) {
               <p className="text-xs text-gray-400">@{userData?.userHandle}</p>
             </div>
           </div>
-          {!isEditable && <Button className="self-end">Follow</Button>}
-        </div>
-        <div className="flex flex-row justify-between border-b-2 pb-2">
-          <p>{userData?.bio}</p>
-          {isEditable && (
-            <Button asChild>
-              <Link href="/edit-profile">Edit Profile</Link>
+          {!isEditable && (
+            <Button className="self-end" onClick={onSubmit}>
+              {isFollowing ? "Following" : "Follow"}
             </Button>
           )}
         </div>
-        {isEditable && <CreatePost />}
+        <div className="flex flex-row justify-between border-b-2 pb-2 my-2">
+          <p>{userData?.bio}</p>
+          {/* {isEditable && (
+            <Button asChild>
+              <Link href="/edit-profile">Edit Profile</Link>
+            </Button>
+          )} */}
+        </div>
+        {isEditable && (
+          <Button asChild className="md:self-end">
+            <Link href="/create-post">Create Post</Link>
+          </Button>
+        )}
       </div>
       <ScrollArea className="  rounded-md md:w-1/2 md:mx-auto h-[580px]">
         {userData?.posts?.length === 0 && <h1>No posts yet</h1>}
