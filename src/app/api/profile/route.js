@@ -29,17 +29,7 @@ export async function GET() {
           createdAt: "desc", // Order posts by the 'createdAt' field in descending order
         },
       },
-      followers: {
-        select: {
-          follower: {
-            select: {
-              id: true,
-              bio: true,
-              // include any other fields from the Profile model that you want
-            },
-          },
-        },
-      },
+      currentUsers: true,
       following: true,
     },
   });

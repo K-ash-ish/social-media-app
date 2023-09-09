@@ -18,9 +18,9 @@ export async function POST(req) {
     },
     include: {
       posts: true,
-      followers: {
+      currentUsers: {
         select: {
-          follower: {
+          currentUser: {
             select: {
               id: true,
               bio: true,
@@ -32,10 +32,11 @@ export async function POST(req) {
       following: true,
     },
   });
+  console.log(userProfile)
   // searched user id userProfile.id
   // current user profileid
   if (userProfile) {
-    const checkFollow = await prisma.follow.findFirst({
+    const isAlreadyFollowing = await prisma.follow.findFirst({
       where: {
         AND: [
           {
@@ -44,19 +45,19 @@ export async function POST(req) {
             },
           },
           {
-            followerId: {
+            currentUserId: {
               equals: userProfile.id,
             },
           },
         ],
       },
     });
-    console.log(checkFollow);
+    console.log(isAlreadyFollowing);
     // fix here
     // if (checkFollow) {
     //   userProfile.isFollowing = true;
     // }
-    if (checkFollow) {
+    if (isAlreadyFollowing) {
       return NextResponse.json(
         { message: { ...userProfile, isFollowing: true } },
         { status: 200 }

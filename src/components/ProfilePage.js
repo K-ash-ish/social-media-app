@@ -6,8 +6,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 function ProfilePage({ userData, isEditable, isFollowing, setIsFollowing }) {
-  const followers = userData?.followers?.length;
-  const following = userData?.following?.length;
+  console.log(userData);
+  const following = userData?.currentUsers?.length;
+  const followers = userData?.following?.length;
   console.log(followers, following);
   function onSubmit() {
     fetch("/api/follow", {

@@ -8,42 +8,40 @@ export async function POST(req) {
   const token = cookies().get("token")?.value;
   const isTokenVerified = await verify(token);
   console.log(isTokenVerified + " current user");
-  console.log(userData, " searched user");
+  // console.log(userData, " searched user");
   if (!isTokenVerified) {
     return NextResponse.json("not authorised");
   }
-  const checkFollow = await prisma.follow.findFirst({
+  const isAlreadyFollowing = await prisma.follow.findFirst({
     where: {
       AND: [
         {
           followingId: {
-            equals: isTokenVerified?.payload?.profileId,
+            equals: userData.id,
           },
         },
         {
-          followerId: {
-            equals: userData?.id,
+          currentUserId: {
+            equals: isTokenVerified?.payload?.profileId,
           },
         },
       ],
     },
   });
-  console.log(checkFollow, " checkFollow");
-  if (checkFollow) {
-    return NextResponse.json("Unfollowed");
-  }
-  if (checkFollow) {
+  console.log(isAlreadyFollowing);
+
+  if (isAlreadyFollowing) {
     await prisma.follow.delete({
       where: {
-        id: checkFollow?.id,
+        id: isAlreadyFollowing?.id,
       },
     });
     return NextResponse.json("Unfollowed");
   }
   const newFollower = await prisma.follow.create({
     data: {
-      followingId: isTokenVerified?.payload?.profileId,
-      followerId: userData?.id,
+      followingId: userData?.id,
+      currentUserId: isTokenVerified?.payload?.profileId,
     },
   });
 
