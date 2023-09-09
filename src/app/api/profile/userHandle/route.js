@@ -32,7 +32,6 @@ export async function POST(req) {
       following: true,
     },
   });
-  console.log(userProfile)
   // searched user id userProfile.id
   // current user profileid
   if (userProfile) {
@@ -41,18 +40,17 @@ export async function POST(req) {
         AND: [
           {
             followingId: {
-              equals: isTokenVerified?.payload?.profileId,
+              equals: userProfile.id,
             },
           },
           {
             currentUserId: {
-              equals: userProfile.id,
+              equals: isTokenVerified?.payload?.profileId,
             },
           },
         ],
       },
     });
-    console.log(isAlreadyFollowing);
     // fix here
     // if (checkFollow) {
     //   userProfile.isFollowing = true;

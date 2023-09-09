@@ -6,10 +6,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 function ProfilePage({ userData, isEditable, isFollowing, setIsFollowing }) {
-  console.log(userData);
   const following = userData?.currentUsers?.length;
   const followers = userData?.following?.length;
-  console.log(followers, following);
   function onSubmit() {
     fetch("/api/follow", {
       method: "POST",
@@ -69,9 +67,9 @@ function ProfilePage({ userData, isEditable, isFollowing, setIsFollowing }) {
       </div>
       <ScrollArea className="  rounded-md md:w-1/2 md:mx-auto h-[580px]">
         {userData?.posts?.length === 0 && <h1>No posts yet</h1>}
-        {userData?.posts?.map((post, index) => {
+        {userData?.posts?.map((post) => {
           return (
-            <Card key={index} className="my-4 mx-2">
+            <Card key={post.id} className="my-4 mx-2">
               <CardHeader className="">
                 <CardTitle className="capitalize font-semibold">
                   {post.title}

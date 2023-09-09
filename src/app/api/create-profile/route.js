@@ -23,6 +23,5 @@ export async function POST(req) {
       userId: isTokenverified.payload.id,
     },
   });
-  console.log("newProfile ", newProfile);
   return NextResponse.json({ message: "success" }, { status: 200 });
 }

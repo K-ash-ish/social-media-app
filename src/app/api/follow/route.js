@@ -7,8 +7,6 @@ export async function POST(req) {
   const { userData } = await req.json();
   const token = cookies().get("token")?.value;
   const isTokenVerified = await verify(token);
-  console.log(isTokenVerified + " current user");
-  // console.log(userData, " searched user");
   if (!isTokenVerified) {
     return NextResponse.json("not authorised");
   }
@@ -28,7 +26,6 @@ export async function POST(req) {
       ],
     },
   });
-  console.log(isAlreadyFollowing);
 
   if (isAlreadyFollowing) {
     await prisma.follow.delete({
@@ -45,6 +42,5 @@ export async function POST(req) {
     },
   });
 
-  console.log(newFollower);
   return NextResponse.json("Followed");
 }
