@@ -18,6 +18,18 @@ export async function POST(req) {
     },
     include: {
       posts: true,
+      followers: {
+        select: {
+          follower: {
+            select: {
+              id: true,
+              bio: true,
+              // include any other fields from the Profile model that you want
+            },
+          },
+        },
+      },
+      following: true,
     },
   });
   // searched user id userProfile.id
@@ -39,20 +51,18 @@ export async function POST(req) {
         ],
       },
     });
+    console.log(checkFollow);
+    // fix here
+    // if (checkFollow) {
+    //   userProfile.isFollowing = true;
+    // }
     if (checkFollow) {
-      userProfile.following = true;
-      // if (isTokenVerified && isTokenVerified?.payload?.id === userProfile.userId) {
-      //   console.log("asdf");
-      //   return NextResponse.json({
-      //     message: "redirect user",
-      //     userData: userProfile,
-      //   });
-      // }
       return NextResponse.json(
-        { message: { ...userProfile, ...checkFollow } },
+        { message: { ...userProfile, isFollowing: true } },
         { status: 200 }
       );
     }
+    return NextResponse.json({ message: userProfile }, { status: 200 });
   }
   return NextResponse.json({ message: "Not found" }, { status: 200 });
 }

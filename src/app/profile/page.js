@@ -12,6 +12,7 @@ function UserProfile() {
     (async () => {
       const res = await fetch("/api/profile");
       const data = await res.json();
+      console.log(data);
       setUserData(data?.message);
     })();
   }, []);

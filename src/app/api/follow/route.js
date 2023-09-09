@@ -28,7 +28,10 @@ export async function POST(req) {
       ],
     },
   });
-  console.log(checkFollow);
+  console.log(checkFollow, " checkFollow");
+  if (checkFollow) {
+    return NextResponse.json("Unfollowed");
+  }
   if (checkFollow) {
     await prisma.follow.delete({
       where: {
@@ -37,14 +40,13 @@ export async function POST(req) {
     });
     return NextResponse.json("Unfollowed");
   }
-  await prisma.follow.create({
+  const newFollower = await prisma.follow.create({
     data: {
       followingId: isTokenVerified?.payload?.profileId,
       followerId: userData?.id,
-      updatedAt: new Date(),
     },
   });
 
-  // console.log(newFollower);
+  console.log(newFollower);
   return NextResponse.json("Followed");
 }

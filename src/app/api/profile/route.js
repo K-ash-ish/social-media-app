@@ -15,6 +15,7 @@ export async function GET() {
   if (!isTokenVerified.payload.profileId) {
     return NextResponse.json({ message: "Profile not found" }, { status: 400 });
   }
+  console.log(isTokenVerified);
   const userProfile = await prisma.profile.findFirst({
     where: {
       id: {
@@ -28,7 +29,20 @@ export async function GET() {
           createdAt: "desc", // Order posts by the 'createdAt' field in descending order
         },
       },
+      followers: {
+        select: {
+          follower: {
+            select: {
+              id: true,
+              bio: true,
+              // include any other fields from the Profile model that you want
+            },
+          },
+        },
+      },
+      following: true,
     },
   });
+  // console.log(userProfile);
   return NextResponse.json({ message: userProfile }, { status: 200 });
 }

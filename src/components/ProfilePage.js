@@ -6,6 +6,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 function ProfilePage({ userData, isEditable, isFollowing, setIsFollowing }) {
+  const followers = userData?.followers?.length;
+  const following = userData?.following?.length;
+  console.log(followers, following);
   function onSubmit() {
     fetch("/api/follow", {
       method: "POST",
@@ -45,8 +48,12 @@ function ProfilePage({ userData, isEditable, isFollowing, setIsFollowing }) {
             </Button>
           )}
         </div>
-        <div className="flex flex-row justify-between border-b-2 pb-2 my-2">
+        <div className="flex flex-col justify-between border-b-2 pb-2 my-2">
           <p>{userData?.bio}</p>
+          <div className="text-xs text-gray-400  flex space-x-4 mt-1">
+            <span>Following: {following || 0}</span>
+            <span>Followers: {followers || 0}</span>
+          </div>
           {/* {isEditable && (
             <Button asChild>
               <Link href="/edit-profile">Edit Profile</Link>
