@@ -12,23 +12,18 @@ export async function GET() {
   if (!isTokenVerified) {
     return NextResponse.json({ message: "Not Authorised" }, { status: 400 });
   }
-  const followingProfiles = await prisma.profile.findUnique({
+  const currentUser = await prisma.profile.findUnique({
     where: { userId: isTokenVerified?.payload?.id },
     include: {
-      following: {
-        select: {
-          followerId: true,
-        },
-      },
+      currentUsers: true,
     },
   });
 
-  console.log(followingProfiles);
   const posts = await prisma.post.findMany({
     where: {
       author: {
         id: {
-          in: followingProfiles?.following?.map((item) => item.followerId),
+          in: currentUser.currentUsers?.map((item) => item.followingId),
         },
       },
     },
@@ -47,6 +42,5 @@ export async function GET() {
       },
     },
   });
-  console.log(posts);
   return NextResponse.json({ message: posts }, { status: 200 });
 }

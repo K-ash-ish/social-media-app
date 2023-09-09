@@ -1,4 +1,5 @@
 "use client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 
 function Feed() {
@@ -19,24 +20,20 @@ function Feed() {
     fetchData();
   }, []);
 
-  console.log(posts);
 
   return (
-    <div>
+    <div className="rounded-md md:w-1/2 md:mx-auto h-[580px]">
+      <h1 className="text-3xl font-bold text-center mt-2">Feed</h1>
       {posts?.map((post) => {
         return (
-          <div className="border-2">
-            <div>
-              <h1 className="text-xl capitalize font-bold">
-                {post.author.name}
-              </h1>
-              <h1>{post.author.userHandle}</h1>
-            </div>
-            <div className="border-2">
-              <h1>{post.title}</h1>
-              <p>{post.content}</p>
-            </div>
-          </div>
+          <Card key={post.id} className="my-4 mx-2">
+            <CardHeader className="">
+              <CardTitle className="capitalize font-semibold">
+                {post.author.userHandle}
+              </CardTitle>
+              <CardContent className="text-sm">{post.content}</CardContent>
+            </CardHeader>
+          </Card>
         );
       })}
     </div>
