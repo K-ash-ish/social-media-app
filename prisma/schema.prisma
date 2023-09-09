@@ -26,7 +26,7 @@ model Profile {
   userHandle String   @unique
   profilePic String?
   userId     Int      @unique
-  followers  Follow[] @relation("follower")
+  currentUsers  Follow[] @relation("currentUserFollow")
   following  Follow[] @relation("following")
   posts      Post[]
   user       User     @relation(fields: [userId], references: [id])
@@ -36,10 +36,12 @@ model Follow {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
   followingId Int
-  followerId  Int
-  follower    Profile  @relation("follower", fields: [followerId], references: [id])
+  currentUserId  Int
+
   following   Profile  @relation("following", fields: [followingId], references: [id])
+  currentUser    Profile  @relation("currentUserFollow", fields: [currentUserId], references: [id])
 }
 
 model User {
