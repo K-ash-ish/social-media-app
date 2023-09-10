@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -15,33 +16,68 @@ model Post {
   title     String   @db.VarChar(255)
   content   String?
   published Boolean  @default(false)
-  authorId  Int?
-  author    Profile? @relation(fields: [authorId], references: [id])
+
+  authorId Int?
+  author   Profile? @relation(fields: [authorId], references: [id])
+
+  comments Comment[]
+  Like     Like[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String
+
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
+
+  authorId Int
+  author   Profile @relation(fields: [authorId], references: [id])
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
+
+  authorId Int
+  author   Profile @relation(fields: [authorId], references: [id])
 }
 
 model Profile {
-  id         Int      @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   bio        String?
   name       String?
-  userHandle String   @unique
+  userHandle String  @unique
   profilePic String?
-  userId     Int      @unique
-  currentUsers  Follow[] @relation("currentUserFollow")
-  following  Follow[] @relation("following")
-  posts      Post[]
-  user       User     @relation(fields: [userId], references: [id])
+
+  userId       Int      @unique
+  currentUsers Follow[] @relation("currentUserFollow")
+  following    Follow[] @relation("following")
+
+  posts Post[]
+  user  User   @relation(fields: [userId], references: [id])
+
+  comments Comment[]
+
+  likes     Like[]
 }
 
 model Follow {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  followingId Int
-  currentUserId  Int
+  followingId   Int
+  currentUserId Int
 
-  following   Profile  @relation("following", fields: [followingId], references: [id])
-  currentUser    Profile  @relation("currentUserFollow", fields: [currentUserId], references: [id])
+  following   Profile @relation("following", fields: [followingId], references: [id])
+  currentUser Profile @relation("currentUserFollow", fields: [currentUserId], references: [id])
 }
 
 model User {
