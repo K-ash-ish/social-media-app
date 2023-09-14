@@ -1,25 +1,10 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useUserPosts } from "@/hooks/useUserPosts";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 function Feed() {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("/api/feed");
-        const data = await res.json();
-        setPosts(data?.message);
-      } catch (error) {
-        // Handle errors if the fetch fails
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const posts = useUserPosts();
 
   return (
     <div className="rounded-md md:w-1/2 md:mx-auto h-[580px]">

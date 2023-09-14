@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import FormFieldComp from "@/components/FormFieldComp";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -22,6 +23,7 @@ const formSchema = z.object({
 
 function Login() {
   const router = useRouter();
+  const [login] = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -31,25 +33,15 @@ function Login() {
     },
   });
 
-  function onSubmit(values) {
+  async function onSubmit(values) {
     const { email, password } = values;
     setIsLoading(true);
-    fetch("api/login", {
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-      method: "POST",
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setIsLoading(false);
-        if (data.message === null) {
-          return router.push("/create-profile");
-        }
-        return router.push("/feed");
-      });
+    const loginData = await login(email, password);
+    setIsLoading(false);
+    if (loginData.message === null) {
+      return router.push("/create-profile");
+    }
+    return router.push("/feed");
   }
 
   return (
