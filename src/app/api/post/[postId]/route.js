@@ -25,21 +25,6 @@ export async function GET(req, context) {
           userHandle: true,
         },
       },
-      comments: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          content: true,
-          author: {
-            select: {
-              name: true,
-              userHandle: true,
-              profilePic: true,
-            },
-          },
-        },
-      },
     },
   });
   // console.log(post);

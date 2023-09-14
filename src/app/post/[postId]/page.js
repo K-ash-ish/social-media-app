@@ -10,16 +10,26 @@ function PostPage({ params }) {
   const { postId } = params;
   const [post, setPost] = useState();
   const [comment, setComment] = useState("");
+  const [likes, setLikes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
   useEffect(() => {
     (async () => {
-      const res = await fetch(`/api/post/${postId}`, {
+      const postRes = await fetch(`/api/post/${postId}`, {
         credentials: "include",
       });
+      const postJson = await postRes.json();
+      setPost(postJson?.post);
 
-      const data = await res.json();
-      console.log(data?.post);
-      setPost(data?.post);
+      const likeRes = await fetch(`/api/like/${postId}`, {
+        credentials: "include",
+      });
+      const likesJson = await likeRes.json();
+      if (likesJson.isLiked) {
+        setIsLiked(true);
+      }
+      setLikes(likesJson?.message?.length);
+      console.log(likesJson);
     })();
   }, []);
 
@@ -37,7 +47,6 @@ function PostPage({ params }) {
       .then((response) => response.json())
       .then((data) => {
         setIsLoading(false);
-        console.log(data);
       });
   }
 
@@ -52,7 +61,11 @@ function PostPage({ params }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        if (data?.isLiked) {
+          setIsLiked(true);
+        } else {
+          setIsLiked(false);
+        }
       });
   }
   return (
@@ -76,9 +89,9 @@ function PostPage({ params }) {
                   variant="ghost"
                   className="underline underline-offset-2  hover:bg-primary hover:text-white h-10"
                 >
-                  Like
+                  {isLiked ? "Unlike" : "Like"}
                 </Button>
-                <span>{post?.likes || 0}</span>
+                <span>{likes}</span>
               </div>
               <Textarea
                 placeholder="comment"
