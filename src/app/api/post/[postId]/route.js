@@ -3,8 +3,9 @@ import { verify } from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function POST(req) {
-  const { postId } = await req.json();
+export async function GET(req, context) {
+  const { postId } = context.params;
+  console.log(postId);
   const token = cookies().get("token")?.value;
   if (!token) {
     return NextResponse.json({ message: "Not Authorised" }, { status: 400 });
@@ -41,6 +42,6 @@ export async function POST(req) {
       },
     },
   });
-  console.log(post);
+  // console.log(post);
   return NextResponse.json({ message: "success", post }, { status: 200 });
 }
