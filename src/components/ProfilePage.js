@@ -3,26 +3,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useFollow } from "@/hooks/useFollow";
 
-function ProfilePage({ userData, isEditable, isFollowing, setIsFollowing }) {
-  const following = userData?.currentUsers?.length;
-  const followers = userData?.following?.length;
-  function onSubmit() {
-    fetch("/api/follow", {
-      method: "POST",
-      body: JSON.stringify({
-        userData,
-      }),
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setIsFollowing(!isFollowing);
-      });
+function ProfilePage(props) {
+  const { profileData, isEditable, isFollowing } = props;
+
+  const followings = profileData?.currentUsers?.length;
+  const followers = profileData?.following?.length;
+
+  const follow = useFollow();
+
+  function handleFollow() {
+    follow(profileData);
   }
-  return userData === "Not Authorised" ? (
+
+  return profileData === "Not Authorised" ? (
     <h1>Not Authorised</h1>
   ) : (
     <div className=" flex flex-col  m-4 overflow-hidden ">
@@ -31,26 +26,28 @@ function ProfilePage({ userData, isEditable, isFollowing, setIsFollowing }) {
           <div className="flex space-x-4">
             <Avatar>
               <AvatarImage
-                src={userData?.profilePic || "https://github.com/shadcn.png"}
+                src={profileData?.profilePic || "https://github.com/shadcn.png"}
                 alt="@shadcn"
               />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-lg capitalize">{userData?.name}</h1>
-              <p className="text-xs text-gray-400">@{userData?.userHandle}</p>
+              <h1 className="text-lg capitalize">{profileData?.name}</h1>
+              <p className="text-xs text-gray-400">
+                @{profileData?.userHandle}
+              </p>
             </div>
           </div>
           {!isEditable && (
-            <Button className="self-end" onClick={onSubmit}>
+            <Button className="self-end" onClick={handleFollow}>
               {isFollowing ? "Following" : "Follow"}
             </Button>
           )}
         </div>
         <div className="flex flex-col justify-between border-b-2 pb-2 my-2">
-          <p>{userData?.bio}</p>
+          <p>{profileData?.bio}</p>
           <div className="text-xs text-gray-400  flex space-x-4 mt-1">
-            <span>Following: {following || 0}</span>
+            <span>Following: {followings || 0}</span>
             <span>Followers: {followers || 0}</span>
           </div>
           {/* {isEditable && (
@@ -66,8 +63,8 @@ function ProfilePage({ userData, isEditable, isFollowing, setIsFollowing }) {
         )}
       </div>
       <ScrollArea className="  rounded-md md:w-1/2 md:mx-auto h-[580px]">
-        {userData?.posts?.length === 0 && <h1>No posts yet</h1>}
-        {userData?.posts?.map((post) => {
+        {profileData?.posts?.length === 0 && <h1>No posts yet</h1>}
+        {profileData?.posts?.map((post) => {
           return (
             <Card key={post.id} className="my-4 mx-2">
               <CardHeader className="">
