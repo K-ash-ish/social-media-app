@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useIndividualPost } from "@/hooks/useIndividualPost";
+import { useLikes } from "@/hooks/useLikes";
 import { useEffect, useState } from "react";
 
 function PostPage({ params }) {
   const { postId } = params;
-  const [post, allComments, likes, isLiked] = useIndividualPost(postId);
-
+  const [post, allComments, likes, isLiked, setIsLiked] =
+    useIndividualPost(postId);
+  const like = useLikes();
   const [comment, setComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,23 +33,14 @@ function PostPage({ params }) {
       });
   }
 
-  function handleLike(e) {
+  async function handleLike(e) {
     e.preventDefault();
-    fetch("/api/like", {
-      body: JSON.stringify({
-        postId: postId,
-      }),
-      method: "POST",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.isLiked) {
-          setIsLiked(true);
-        } else {
-          setIsLiked(false);
-        }
-      });
+    const likeData = await like(postId);
+    if (likeData?.isLiked) {
+      setIsLiked(true);
+    } else {
+      setIsLiked(false);
+    }
   }
   return (
     <Card key={post?.id} className="md:w-1/2 md:mx-auto ">

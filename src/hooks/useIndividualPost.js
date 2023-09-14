@@ -28,5 +28,5 @@ export function useIndividualPost(postId) {
       setAllComments(commentsJson?.data);
     })();
   }, []);
-  return [post, allComments, likes, isLiked];
+  return [post, allComments, likes, isLiked, setIsLiked];
 }
