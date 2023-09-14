@@ -4,38 +4,32 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { useComments } from "@/hooks/useComments";
 import { useIndividualPost } from "@/hooks/useIndividualPost";
 import { useLikes } from "@/hooks/useLikes";
 import { useEffect, useState } from "react";
 
 function PostPage({ params }) {
   const { postId } = params;
+
   const [post, allComments, likes, isLiked, setIsLiked] =
     useIndividualPost(postId);
-  const like = useLikes();
+  const addLike = useLikes();
+  const addComment = useComments();
+
   const [comment, setComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  function handleComment(e) {
+  async function handleComment(e) {
     e.preventDefault();
     setIsLoading(true);
-    fetch("/api/comment", {
-      body: JSON.stringify({
-        postId: Number(postId),
-        content: comment,
-      }),
-      method: "POST",
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setIsLoading(false);
-      });
+    const commentData = await addComment(postId, comment);
+    setIsLoading(false);
   }
 
   async function handleLike(e) {
     e.preventDefault();
-    const likeData = await like(postId);
+    const likeData = await addLike(postId);
     if (likeData?.isLiked) {
       setIsLiked(true);
     } else {
