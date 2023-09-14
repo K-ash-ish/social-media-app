@@ -4,38 +4,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { useIndividualPost } from "@/hooks/useIndividualPost";
 import { useEffect, useState } from "react";
 
 function PostPage({ params }) {
   const { postId } = params;
-  const [post, setPost] = useState();
+  const [post, allComments, likes, isLiked] = useIndividualPost(postId);
+
   const [comment, setComment] = useState("");
-  const [allComments, setAllComments] = useState([]);
-  const [likes, setLikes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  useEffect(() => {
-    (async () => {
-      const postRes = await fetch(`/api/post/${postId}`, {
-        credentials: "include",
-      });
-      const postJson = await postRes.json();
-      setPost(postJson?.post);
-
-      const likeRes = await fetch(`/api/like/${postId}`, {
-        credentials: "include",
-      });
-      const likesJson = await likeRes.json();
-      if (likesJson.isLiked) {
-        setIsLiked(true);
-      }
-      setLikes(likesJson?.message?.length);
-
-      const commentsRes = await fetch(`/api/comment/${postId}`);
-      const commentsJson = await commentsRes.json();
-      setAllComments(commentsJson?.data);
-    })();
-  }, []);
 
   function handleComment(e) {
     e.preventDefault();
