@@ -8,7 +8,7 @@ function OtherUserProfile({ params }) {
   const [isEditable, setIsEditable] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
 
-  const [profileData] = useUserProfile(userHandle);
+  const { profileData } = useUserProfile(userHandle);
 
   useEffect(() => {
     if (profileData?.isFollowing) {

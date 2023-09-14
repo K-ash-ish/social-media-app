@@ -13,6 +13,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { useUserPosts } from "@/hooks/useUserPosts";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 const formSchema = z.object({
   bio: z.string(),
@@ -32,30 +34,11 @@ function ProfileForm() {
       profilePic: "",
     },
   });
+  const { createProfile } = useUserProfile();
 
   function onSubmit(values) {
     const { bio, name, userHandle, profilePic } = values;
-    fetch("api/create-profile", {
-      body: JSON.stringify({
-        bio,
-        name,
-        userHandle,
-        profilePic,
-      }),
-      method: "POST",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.message === "success") {
-          router.push("/feed");
-        } else {
-          router.push("/login");
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+    createProfile(bio, name, userHandle, profilePic);
   }
 
   return (

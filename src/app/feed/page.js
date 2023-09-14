@@ -4,7 +4,7 @@ import { useUserPosts } from "@/hooks/useUserPosts";
 import Link from "next/link";
 
 function Feed() {
-  const posts = useUserPosts();
+  const { posts } = useUserPosts();
 
   return (
     <div className="rounded-md md:w-1/2 md:mx-auto h-[580px]">

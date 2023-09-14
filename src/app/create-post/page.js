@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import FormFieldComp from "@/components/FormFieldComp";
+import { useUserPosts } from "@/hooks/useUserPosts";
 
 const formSchema = z.object({
   title: z.string().min(2).max(30),
@@ -30,7 +31,7 @@ const formSchema = z.object({
 function CreatePost() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
+  const { createPost } = useUserPosts();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,21 +42,7 @@ function CreatePost() {
 
   function onSubmit(values) {
     const { title, content } = values;
-    fetch("/api/create-post", {
-      body: JSON.stringify({
-        title,
-        content,
-      }),
-      method: "POST",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        router.push("/profile");
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+    createPost(title, content);
   }
 
   return (
