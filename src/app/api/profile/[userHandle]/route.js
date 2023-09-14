@@ -3,17 +3,17 @@ import { verify } from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function POST(req) {
-  const data = await req.json();
+export async function GET(req, context) {
+  const { userHandle } = context.params;
   const token = cookies().get("token")?.value;
   const isTokenVerified = await verify(token);
-  if (isTokenVerified?.payload?.userHandle === data.userHandle) {
+  if (isTokenVerified?.payload?.userHandle === userHandle) {
     return NextResponse.json({ message: "redirect user" }, { status: 200 });
   }
   const userProfile = await prisma.profile.findFirst({
     where: {
       userHandle: {
-        equals: data.userHandle,
+        equals: userHandle,
       },
     },
     include: {
@@ -51,10 +51,7 @@ export async function POST(req) {
         ],
       },
     });
-    // fix here
-    // if (checkFollow) {
-    //   userProfile.isFollowing = true;
-    // }
+
     if (isAlreadyFollowing) {
       return NextResponse.json(
         { message: { ...userProfile, isFollowing: true } },

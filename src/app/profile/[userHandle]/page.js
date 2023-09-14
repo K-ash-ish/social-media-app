@@ -12,11 +12,7 @@ function OtherUserProfile({ params }) {
   const [followers, setFollowers] = useState(0);
   useEffect(() => {
     (async () => {
-      const res = await fetch("/api/profile/userHandle", {
-        body: JSON.stringify({
-          userHandle,
-        }),
-        method: "POST",
+      const res = await fetch(`/api/profile/${userHandle}`, {
         credentials: "include",
       });
       const data = await res.json();
