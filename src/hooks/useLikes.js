@@ -1,5 +1,5 @@
 export function useLikes() {
-  const like = async (postId) => {
+  const addLike = async (postId) => {
     return fetch("/api/like", {
       body: JSON.stringify({
         postId: postId,
@@ -12,5 +12,5 @@ export function useLikes() {
         return data;
       });
   };
-  return like;
+  return addLike;
 }
