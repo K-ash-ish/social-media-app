@@ -10,6 +10,7 @@ function PostPage({ params }) {
   const { postId } = params;
   const [post, setPost] = useState();
   const [comment, setComment] = useState("");
+  const [allComments, setAllComments] = useState([]);
   const [likes, setLikes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
@@ -29,7 +30,10 @@ function PostPage({ params }) {
         setIsLiked(true);
       }
       setLikes(likesJson?.message?.length);
-      console.log(likesJson);
+
+      const commentsRes = await fetch(`/api/comment/${postId}`);
+      const commentsJson = await commentsRes.json();
+      setAllComments(commentsJson?.data);
     })();
   }, []);
 
@@ -110,7 +114,7 @@ function PostPage({ params }) {
             </div>
           </div>
           <h3 className="text-base font-semibold ">Comments:</h3>
-          {post?.comments?.map((comment) => {
+          {allComments.map((comment) => {
             return (
               <div
                 key={comment.id}
