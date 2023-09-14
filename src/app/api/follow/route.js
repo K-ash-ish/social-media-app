@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  const { userData } = await req.json();
+  const { profileData } = await req.json();
   const token = cookies().get("token")?.value;
   const isTokenVerified = await verify(token);
   if (!isTokenVerified) {
@@ -15,7 +15,7 @@ export async function POST(req) {
       AND: [
         {
           followingId: {
-            equals: userData.id,
+            equals: profileData.id,
           },
         },
         {
@@ -26,7 +26,7 @@ export async function POST(req) {
       ],
     },
   });
-
+  console.log("isAlreadyFollowing: ", isAlreadyFollowing);
   if (isAlreadyFollowing) {
     await prisma.follow.delete({
       where: {
@@ -37,10 +37,13 @@ export async function POST(req) {
   }
   const newFollower = await prisma.follow.create({
     data: {
-      followingId: userData?.id,
+      followingId: profileData?.id,
       currentUserId: isTokenVerified?.payload?.profileId,
     },
   });
 
-  return NextResponse.json("Followed");
+  return NextResponse.json(
+    { message: "Followed", data: newFollower },
+    { status: 200 }
+  );
 }

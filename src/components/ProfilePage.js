@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useFollow } from "@/hooks/useFollow";
 
 function ProfilePage(props) {
-  const { profileData, isEditable, isFollowing } = props;
+  const { profileData, isEditable, isFollowing, setIsFollowing } = props;
 
   const followings = profileData?.currentUsers?.length;
   const followers = profileData?.following?.length;
@@ -14,7 +14,7 @@ function ProfilePage(props) {
   const follow = useFollow();
 
   function handleFollow() {
-    follow(profileData);
+    follow(profileData, isFollowing, setIsFollowing);
   }
 
   return profileData === "Not Authorised" ? (

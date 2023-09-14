@@ -1,14 +1,21 @@
 "use client";
 import ProfilePage from "@/components/ProfilePage";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function OtherUserProfile({ params }) {
   const { userHandle } = params;
   const [isEditable, setIsEditable] = useState(false);
-  const [profileData, isFollowing, setIsFollowing] = useUserProfile(userHandle);
+  const [isFollowing, setIsFollowing] = useState(false);
 
-  // const followers = profileData?.
+  const [profileData] = useUserProfile(userHandle);
+
+  useEffect(() => {
+    if (profileData?.isFollowing) {
+      setIsFollowing(true);
+    }
+  }, [profileData]);
+
   if (profileData === "Not found") {
     return "User Not Found";
   }
