@@ -18,6 +18,7 @@ export async function POST(req) {
   });
   if (reqUser) {
     const isValidPassword = await compare(reqUser.password, password);
+    console.log(isValidPassword);
     if (isValidPassword) {
       const token = await sign({
         accessLevel: "user",
@@ -26,12 +27,12 @@ export async function POST(req) {
         userHandle: reqUser.profile?.userHandle,
         profileId: reqUser.profile?.id || null,
       });
-      const oneHour = 60 * 60 * 1000;
+      const oneWeek = 7 * 24 * 60 * 60 * 1000;
       cookies().set({
         name: "token",
         value: token,
         httpOnly: true,
-        expires: Date.now() + oneHour,
+        expires: Date.now() + oneWeek,
       });
       const userProfile = await prisma.profile.findFirst({
         where: {
@@ -43,5 +44,5 @@ export async function POST(req) {
       return NextResponse.json({ message: userProfile }, { status: 200 });
     }
   }
-  return NextResponse.json({ error: "wrong credentials" }, { status: 400 });
+  return NextResponse.json({ error: "wrong credentials" }, { status: 401 });
 }

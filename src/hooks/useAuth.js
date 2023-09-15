@@ -13,5 +13,21 @@ export function useAuth() {
         return data;
       });
   };
-  return [login];
+
+  const signUp = async (email, password) => {
+    return fetch("api/signup", {
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+      method: "POST",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      });
+  };
+
+  return { login, signUp };
 }

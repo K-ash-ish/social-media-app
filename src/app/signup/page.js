@@ -22,11 +22,13 @@ const formSchema = z.object({
   password: z.string(),
 });
 
-function Login() {
+function SignUpPage() {
   const router = useRouter();
-  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const { signUp } = useAuth();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,23 +39,22 @@ function Login() {
 
   async function onSubmit(values) {
     const { email, password } = values;
+    console.log(values);
     setIsLoading(true);
-    const loginData = await login(email, password);
+    const signUpData = await signUp(email, password);
+    console.log(signUpData);
     setIsLoading(false);
-    console.log(loginData);
-    if (loginData.error) {
-      setErrorMessage(loginData.error);
-    } else if (loginData.message === null) {
-      return router.push("/create-profile");
+    if (signUpData.error) {
+      setErrorMessage(signUpData.error);
     } else {
-      return router.push("/feed");
+      return router.push("/create-profile");
     }
   }
 
   return (
     <Auth
-      title="Login"
-      description="Login to access your account."
+      title="Sign Up"
+      description="Create a new account."
       form={form}
       onSubmit={onSubmit}
       isLoading={isLoading}
@@ -62,4 +63,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SignUpPage;
