@@ -18,21 +18,25 @@ export async function POST(req) {
   });
   if (reqUser) {
     const isValidPassword = await compare(reqUser.password, password);
-    console.log(isValidPassword);
+
     if (isValidPassword) {
-      const token = await sign({
+      const accessToken = await sign({
         accessLevel: "user",
         email: reqUser.email,
         id: reqUser.id,
         userHandle: reqUser.profile?.userHandle,
         profileId: reqUser.profile?.id || null,
       });
-      const oneWeek = 7 * 24 * 60 * 60 * 1000;
+      const oneWeek = 7 * 86400 * 1000;
+      const expiry = Date.now() + oneWeek;
+      const expiryDate = new Date(expiry);
+
+      console.log(expiryDate);
       cookies().set({
-        name: "token",
-        value: token,
+        name: "accessToken",
+        value: accessToken,
         httpOnly: true,
-        expires: Date.now() + oneWeek,
+        expires: expiryDate,
       });
       const userProfile = await prisma.profile.findFirst({
         where: {

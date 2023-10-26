@@ -5,11 +5,11 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   const profileDetails = await req.json();
-  const token = cookies().get("token")?.value;
-  if (!token) {
+  const accessToken = cookies().get("accessToken")?.value;
+  if (!accessToken) {
     return NextResponse.json({ error: "Not authorised" }, { status: 401 });
   }
-  const isTokenverified = await verify(token);
+  const isTokenverified = await verify(accessToken);
   if (!isTokenverified) {
     return NextResponse.json({ error: "Not authorised" }, { status: 400 });
   }
@@ -24,7 +24,7 @@ export async function POST(req) {
       },
     });
 
-    const token = await sign({
+    const accessToken = await sign({
       accessLevel: "user",
       email: isTokenverified?.payload?.email,
       id: isTokenverified?.payload?.id,
@@ -35,8 +35,8 @@ export async function POST(req) {
     const onwMonth = 30 * 24 * 60 * 60 * 1000;
 
     cookies().set({
-      name: "token",
-      value: token,
+      name: "accessToken",
+      value: accessToken,
       httpOnly: true,
       expires: Date.now() + onwMonth,
     });

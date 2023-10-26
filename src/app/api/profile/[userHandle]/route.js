@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 
 export async function GET(req, context) {
   const { userHandle } = context.params;
-  const token = cookies().get("token")?.value;
-  const isTokenVerified = await verify(token);
+  const accessToken = cookies().get("accessToken")?.value;
+  const isTokenVerified = await verify(accessToken);
   if (isTokenVerified?.payload?.userHandle === userHandle) {
     return NextResponse.json({ message: "redirect user" }, { status: 200 });
   }

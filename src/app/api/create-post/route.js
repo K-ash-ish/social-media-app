@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   const reqJson = await req.json();
-  const currentUser = cookies().get("token")?.value;
+  const currentUser = cookies().get("accessToken")?.value;
   const isValidUser = await verify(currentUser);
   if (isValidUser) {
     const newPost = await prisma.post.create({

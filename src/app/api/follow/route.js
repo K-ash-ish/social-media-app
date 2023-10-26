@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   const { profileData } = await req.json();
-  const token = cookies().get("token")?.value;
-  const isTokenVerified = await verify(token);
+  const accessToken = cookies().get("accessToken")?.value;
+  const isTokenVerified = await verify(accessToken);
   if (!isTokenVerified) {
     return NextResponse.json("not authorised");
   }

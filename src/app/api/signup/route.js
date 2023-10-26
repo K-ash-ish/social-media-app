@@ -29,7 +29,7 @@ export async function POST(req) {
     },
   });
 
-  const token = await sign({
+  const accessToken = await sign({
     accessLevel: "user",
     email: newUser.email,
     id: newUser.id,
@@ -40,8 +40,8 @@ export async function POST(req) {
   const oneWeek = 7 * 24 * 60 * 60 * 1000;
 
   cookies().set({
-    name: "token",
-    value: token,
+    name: "accessToken",
+    value: accessToken,
     httpOnly: true,
     expires: Date.now() + oneWeek,
   });

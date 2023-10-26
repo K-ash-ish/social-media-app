@@ -1,6 +1,6 @@
 import * as jose from "jose";
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+const secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
 
 export const sign = async (payload) => {
   const alg = "HS256";

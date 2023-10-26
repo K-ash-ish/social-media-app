@@ -5,16 +5,14 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   const { postId } = await req.json();
-  const token = cookies().get("token")?.value;
-  if (!token) {
+  const accessToken = cookies().get("accessToken")?.value;
+  if (!accessToken) {
     return NextResponse.json({ message: "Not Authorised" }, { status: 400 });
   }
-  const isTokenVerified = await verify(token);
+  const isTokenVerified = await verify(accessToken);
   if (!isTokenVerified) {
     return NextResponse.json({ message: "Not Authorised" }, { status: 400 });
   }
-  console.log("postid: ", postId);
-  console.log(isTokenVerified);
 
   const isAlreadyLiked = await prisma.like.findFirst({
     where: {
