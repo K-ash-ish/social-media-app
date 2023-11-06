@@ -33,7 +33,7 @@ export function useUserProfile(userHandle) {
       .then((res) => res.json())
       .then((data) => {
         if (data.message === "success") {
-          router.push("/");
+          router.push("/profile");
         } else {
           router.push("/login");
         }

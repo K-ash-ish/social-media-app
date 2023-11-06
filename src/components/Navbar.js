@@ -10,11 +10,10 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { useAuth } from "@/hooks/useAuth";
 
 function Navbar() {
-  const { isLoggedIn } = useAuth();
-  isLoggedIn();
+  // const { isLoggedIn } = useAuth();
+  // isLoggedIn();
 
   return (
     <nav className=" rounded-md md:w-1/2 md:mx-auto mx-2 h-16 p-2 flex justify-between items-center">
