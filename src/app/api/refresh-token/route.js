@@ -1,4 +1,6 @@
 import { prismaAccelerate } from "@/lib/db";
+import { sign } from "@/lib/jwt";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
   const { id } = await req.json();

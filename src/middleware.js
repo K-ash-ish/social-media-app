@@ -26,15 +26,14 @@ async function isRefreshToken(req) {
   return id;
 }
 async function getNewAccessToken(id) {
-  const newToken = await fetch("http://localhost:3000/api/refresh-token", {
-    method: "POST",
-    body: JSON.stringify({ id }),
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Credentials": true,
-    },
-  })
+  const newToken = await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}api/refresh-token`,
+    {
+      method: "POST",
+      body: JSON.stringify({ id }),
+      credentials: "include",
+    }
+  )
     .then((data) => data.json())
     .then((data) => data);
   return newToken;
