@@ -21,7 +21,6 @@ export async function GET(req, context) {
       },
     },
   });
-  console.log(likes);
 
   const isAlreadyLiked = await prisma.like.findFirst({
     where: {
@@ -39,7 +38,6 @@ export async function GET(req, context) {
       ],
     },
   });
-  console.log(isAlreadyLiked);
   if (isAlreadyLiked) {
     return NextResponse.json(
       { message: likes, isLiked: true },

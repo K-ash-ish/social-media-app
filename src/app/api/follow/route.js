@@ -26,7 +26,6 @@ export async function POST(req) {
       ],
     },
   });
-  console.log("isAlreadyFollowing: ", isAlreadyFollowing);
   if (isAlreadyFollowing) {
     await prisma.follow.delete({
       where: {

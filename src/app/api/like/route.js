@@ -49,7 +49,6 @@ export async function POST(req) {
         authorId: isTokenVerified?.payload?.profileId,
       },
     });
-    console.log(newLike);
     return NextResponse.json(
       { message: "Like added", isLiked: true },
       { status: 200 }

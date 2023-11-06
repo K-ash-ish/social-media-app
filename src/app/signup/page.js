@@ -39,10 +39,8 @@ function SignUpPage() {
 
   async function onSubmit(values) {
     const { email, password } = values;
-    console.log(values);
     setIsLoading(true);
     const signUpData = await signUp(email, password);
-    console.log(signUpData);
     setIsLoading(false);
     if (signUpData.error) {
       setErrorMessage(signUpData.error);

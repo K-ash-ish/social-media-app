@@ -32,13 +32,12 @@ export async function POST(req) {
       userHandle: profileDetails?.userHandle,
       profileId: newProfile.id,
     });
-    const onwMonth = 30 * 24 * 60 * 60 * 1000;
 
     cookies().set({
       name: "accessToken",
       value: accessToken,
       httpOnly: true,
-      expires: Date.now() + onwMonth,
+      expires: Date.now() + 15 * 60 * 1000,
     });
 
     return NextResponse.json({ message: "success" }, { status: 200 });

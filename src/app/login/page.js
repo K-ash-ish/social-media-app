@@ -2,17 +2,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import FormFieldComp from "@/components/FormFieldComp";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import Auth from "@/components/Auth";
@@ -46,7 +36,7 @@ function Login() {
     } else if (loginData.message === null) {
       return router.push("/create-profile");
     } else {
-      return router.push("/feed");
+      return router.push("/");
     }
   }
 

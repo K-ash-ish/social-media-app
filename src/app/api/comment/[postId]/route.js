@@ -20,7 +20,6 @@ export async function GET(req, context) {
         },
       },
     });
-    console.log(comments);
     return NextResponse.json(
       { message: "success", data: comments },
       { status: 200 }

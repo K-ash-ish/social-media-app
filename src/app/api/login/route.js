@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { compare } from "@/lib/hash";
-import { sign } from "@/lib/jwt";
+import { refreshSign, sign } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
@@ -27,17 +27,22 @@ export async function POST(req) {
         userHandle: reqUser.profile?.userHandle,
         profileId: reqUser.profile?.id || null,
       });
-      const oneWeek = 7 * 86400 * 1000;
-      const expiry = Date.now() + oneWeek;
-      const expiryDate = new Date(expiry);
-
-      console.log(expiryDate);
+      const refreshToken = await refreshSign({
+        id: reqUser.id,
+      });
       cookies().set({
         name: "accessToken",
         value: accessToken,
         httpOnly: true,
-        expires: expiryDate,
+        expires: Date.now() + 15 * 60 * 1000,
       });
+      cookies().set({
+        name: "refreshToken",
+        value: refreshToken,
+        httpOnly: true,
+        expires: Date.now() + 7 * 86400 * 1000,
+      });
+
       const userProfile = await prisma.profile.findFirst({
         where: {
           userId: {

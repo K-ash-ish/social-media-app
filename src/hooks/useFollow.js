@@ -11,7 +11,6 @@ export function useFollow() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setIsFollowing(!isFollowing);
       });
   };
