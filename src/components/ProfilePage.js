@@ -20,8 +20,8 @@ function ProfilePage(props) {
   return profileData === "Not Authorised" ? (
     <h1>Not Authorised</h1>
   ) : (
-    <div className=" flex flex-col  m-4 overflow-hidden ">
-      <div className="flex flex-col md:w-1/2 md:mx-auto ">
+    <div className=" flex flex-col h-5/6 md:w-1/2 mx-auto m-4 overflow-hidden ">
+      <div className="flex flex-col ">
         <div className="flex  justify-between">
           <div className="flex space-x-4">
             <Avatar>
@@ -62,7 +62,7 @@ function ProfilePage(props) {
           </Button>
         )}
       </div>
-      <ScrollArea className="  rounded-md md:w-1/2 md:mx-auto h-[580px]">
+      <ScrollArea className="  rounded-md ">
         {profileData?.posts?.length === 0 && <h1>No posts yet</h1>}
         {profileData?.posts?.map((post) => {
           return (

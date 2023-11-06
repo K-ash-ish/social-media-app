@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useComments } from "@/hooks/useComments";
 import { useIndividualPost } from "@/hooks/useIndividualPost";
@@ -18,6 +19,7 @@ function PostPage({ params }) {
   const addComment = useComments();
 
   const [comment, setComment] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleComment(e) {
@@ -37,9 +39,9 @@ function PostPage({ params }) {
     }
   }
   return (
-    <Card key={post?.id} className="md:w-1/2 md:mx-auto ">
+    <Card key={post?.id} className="md:w-1/2 h-5/6 md:mx-auto ">
       <CardHeader className="">
-        <CardContent className="flex flex-col gap-2  p-0">
+        <CardContent className="flex flex-col gap-2 h-full p-0">
           <div className="  bg-slate-100 px-2 py-4  rounded-xl ">
             <div className="flex flex-col gap-1">
               <div className="capitalize font-semibold flex flex-col gap-1 max-w-fit">
@@ -64,7 +66,7 @@ function PostPage({ params }) {
               <Textarea
                 placeholder="comment"
                 onChange={(e) => {
-                  setComment(e.target.value);
+                  // setComment(e.target.value);
                 }}
                 value={comment}
               />
@@ -78,34 +80,38 @@ function PostPage({ params }) {
             </div>
           </div>
           <h3 className="text-base font-semibold ">Comments:</h3>
-          {allComments.map((comment) => {
-            return (
-              <div
-                key={comment.id}
-                className="bg-slate-100 px-2 py-4 rounded-lg flex flex-col gap-2 ml-2 "
-              >
-                <div className="flex items-center gap-2">
-                  <Avatar className="">
-                    <AvatarImage
-                      src={
-                        comment?.author?.profilePic ||
-                        "https://github.com/shadcn.png"
-                      }
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col ">
-                    <h3 className="capitalize font-semibold">
-                      {comment?.author?.name}
-                    </h3>
-                    <h4 className="text-xs">@{comment?.author?.userHandle}</h4>
+          <ScrollArea className="h-52 ">
+            {allComments.map((comment) => {
+              return (
+                <div
+                  key={comment.id}
+                  className="bg-slate-100 px-2 py-4 m-2 rounded-lg flex flex-col gap-2 ml-2 "
+                >
+                  <div className="flex items-center gap-2">
+                    <Avatar className="">
+                      <AvatarImage
+                        src={
+                          comment?.author?.profilePic ||
+                          "https://github.com/shadcn.png"
+                        }
+                        alt="@shadcn"
+                      />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col ">
+                      <h3 className="capitalize font-semibold">
+                        {comment?.author?.name}
+                      </h3>
+                      <h4 className="text-xs">
+                        @{comment?.author?.userHandle}
+                      </h4>
+                    </div>
                   </div>
+                  <p className="ml-2">{comment?.content}</p>
                 </div>
-                <p className="ml-2">{comment?.content}</p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </ScrollArea>
         </CardContent>
       </CardHeader>
     </Card>
