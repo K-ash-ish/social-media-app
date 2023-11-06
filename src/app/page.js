@@ -8,7 +8,7 @@ function Feed() {
 
   return (
     <div className="rounded-md md:w-1/2 md:mx-auto h-[580px]">
-      <h1 className="text-3xl font-bold text-center mt-2">Feed</h1>
+      {/* <h1 className="text-3xl font-bold text-center mt-2">Feed</h1> */}
       {posts?.map((post) => {
         return (
           <Link key={post.id} href={`/post/${post.id}`}>
