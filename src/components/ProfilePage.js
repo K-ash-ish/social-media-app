@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useFollow } from "@/hooks/useFollow";
+import PostCard from "./PostCard";
 
 function ProfilePage(props) {
   const { profileData, isEditable, isFollowing, setIsFollowing } = props;
@@ -20,7 +21,7 @@ function ProfilePage(props) {
   return profileData === "Not Authorised" ? (
     <h1>Not Authorised</h1>
   ) : (
-    <div className=" flex flex-col h-5/6 md:w-1/2 mx-auto m-4 overflow-hidden ">
+    <div className=" flex flex-col h-5/6 md:w-1/2 md:mx-auto  m-4 overflow-hidden ">
       <div className="flex flex-col ">
         <div className="flex  justify-between">
           <div className="flex space-x-4">
@@ -66,14 +67,12 @@ function ProfilePage(props) {
         {profileData?.posts?.length === 0 && <h1>No posts yet</h1>}
         {profileData?.posts?.map((post) => {
           return (
-            <Card key={post.id} className="my-4 mx-2">
-              <CardHeader className="">
-                <CardTitle className="capitalize font-semibold">
-                  {post.title}
-                </CardTitle>
-                <CardContent className="text-sm">{post.content}</CardContent>
-              </CardHeader>
-            </Card>
+            <PostCard
+              key={post?.id}
+              id={post?.id}
+              userHandle={profileData?.userHandle}
+              content={post?.content}
+            />
           );
         })}
       </ScrollArea>

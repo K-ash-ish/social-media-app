@@ -2,7 +2,7 @@ import Link from "next/link";
 
 function Footer() {
   return (
-    <footer className="rounded-md md:w-1/2 md:mx-auto  my-2 mx-2 h-10 flex justify-between items-center">
+    <footer className="rounded-md md:w-1/2 md:mx-auto text-lg  mx-2 h-16 p-2 flex justify-between items-end">
       <p>
         Built using{" "}
         <a
@@ -13,7 +13,10 @@ function Footer() {
         >
           NextJs
         </a>{" "}
-        by Kashish
+        by{" "}
+        <span className="underline decoration-blue-400 underline-offset-4">
+          Kashish
+        </span>
       </p>
       <ul className="w-1/4 flex justify-around items-center">
         <li>

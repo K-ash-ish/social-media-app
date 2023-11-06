@@ -13,7 +13,7 @@ import FormFieldComp from "@/components/FormFieldComp";
 function Auth(props) {
   const { title, description, form, onSubmit, isLoading, errorMessage } = props;
   return (
-    <div className="flex h-screen items-center">
+    <div className="rounded-md md:w-1/2 md:mx-auto h-5/6 flex items-center border-2">
       <Card className="w-[350px] mx-auto  ">
         <CardHeader>
           <CardTitle>{title}</CardTitle>

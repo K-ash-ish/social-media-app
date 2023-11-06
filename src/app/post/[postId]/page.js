@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useComments } from "@/hooks/useComments";
 import { useIndividualPost } from "@/hooks/useIndividualPost";
 import { useLikes } from "@/hooks/useLikes";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 function PostPage({ params }) {
@@ -39,18 +40,23 @@ function PostPage({ params }) {
     }
   }
   return (
-    <Card key={post?.id} className="md:w-1/2 h-5/6 md:mx-auto ">
+    <Card
+      key={post?.id}
+      className="md:w-1/2 h-5/6 md:mx-auto bg-slate-50 border-dashed border-blue-400 "
+    >
       <CardHeader className="">
-        <CardContent className="flex flex-col gap-2 h-full p-0">
-          <div className="  bg-slate-100 px-2 py-4  rounded-xl ">
+        <CardContent className="flex flex-col gap-2 h-full p-0 ">
+          <div className="   p-4   rounded-xl border-dashed border-red-200 border-2">
             <div className="flex flex-col gap-1">
               <div className="capitalize font-semibold flex flex-col gap-1 max-w-fit">
-                <h1 className=" capitalize text-2xl">{post?.author?.name}</h1>
-                <p className="text-xs text-gray-400 ml-2 normal-case ">
-                  @{post?.author?.userHandle}
-                </p>
+                {/* <h1 className=" capitalize text-2xl">{post?.author?.name}</h1> */}
+                <Link href={`/profile/${post?.author?.userHandle}`}>
+                  <p className="text-xl capitalize text-gray-400 ml-2  ">
+                    @{post?.author?.userHandle}
+                  </p>
+                </Link>
               </div>
-              <p className="break-words  text-xl px-2 my-2">{post?.content}</p>
+              <p className="break-words  text-xl px-2 my-2 ">{post?.content}</p>
             </div>
             <div className="flex flex-col gap-3">
               <div className="max-w-fit flex gap-2 items-center px-2">
@@ -66,7 +72,7 @@ function PostPage({ params }) {
               <Textarea
                 placeholder="comment"
                 onChange={(e) => {
-                  // setComment(e.target.value);
+                  setComment(e.target.value);
                 }}
                 value={comment}
               />
@@ -79,13 +85,15 @@ function PostPage({ params }) {
               </Button>
             </div>
           </div>
-          <h3 className="text-base font-semibold ">Comments:</h3>
+          <h3 className="text-base font-semibold underline underline-offset-4 my-2  decoration-blue-400">
+            Comments:
+          </h3>
           <ScrollArea className="h-52 ">
             {allComments.map((comment) => {
               return (
                 <div
                   key={comment.id}
-                  className="bg-slate-100 px-2 py-4 m-2 rounded-lg flex flex-col gap-2 ml-2 "
+                  className="border-2 border-dotted border-rose-200 px-2 py-4 m-2 rounded-lg flex flex-col gap-2 ml-2 "
                 >
                   <div className="flex items-center gap-2">
                     <Avatar className="">
