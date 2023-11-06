@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import FormFieldComp from "@/components/FormFieldComp";
+import Link from "next/link";
 
 function Auth(props) {
   const { title, description, form, onSubmit, isLoading, errorMessage } = props;
@@ -31,6 +32,11 @@ function Auth(props) {
                 {isLoading ? "Loading" : "Submit"}
               </Button>
             </form>
+            <p className="text-xs mt-2 text-right text-blue-400 font-semibold ">
+              <Link href={`${title === "Login" ? "/signup" : "/login"}`}>
+                {`${title === "Login" ? " Need an account?" : "Sign in?"}`}
+              </Link>
+            </p>
           </Form>
         </CardContent>
       </Card>
