@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { hash } from "@/lib/hash";
-import { sign } from "@/lib/jwt";
+import { refreshSign, sign } from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -28,23 +28,29 @@ export async function POST(req) {
       authType: "PASSWORD",
     },
   });
+  if (newUser) {
+    const accessToken = await sign({
+      accessLevel: "user",
+      email: newUser.email,
+      id: newUser.id,
+    });
 
-  const accessToken = await sign({
-    accessLevel: "user",
-    email: newUser.email,
-    id: newUser.id,
-    userHandle: newUser.profile?.userHandle,
-    profileId: newUser.profile?.id || null,
-  });
-
-  const oneWeek = 7 * 24 * 60 * 60 * 1000;
-
-  cookies().set({
-    name: "accessToken",
-    value: accessToken,
-    httpOnly: true,
-    expires: Date.now() + oneWeek,
-  });
+    const refreshToken = await refreshSign({
+      id: newUser.id,
+    });
+    cookies().set({
+      name: "accessToken",
+      value: accessToken,
+      httpOnly: true,
+      expires: Date.now() + 15 * 60 * 1000,
+    });
+    cookies().set({
+      name: "refreshToken",
+      value: refreshToken,
+      httpOnly: true,
+      expires: Date.now() + 7 * 86400 * 1000,
+    });
+  }
 
   return NextResponse.json({ message: "Account Created" }, { status: 200 });
 }
