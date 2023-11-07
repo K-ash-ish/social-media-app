@@ -46,6 +46,9 @@ export async function middleware(request) {
   if (request.nextUrl.pathname === "/login" && auth) {
     return NextResponse.redirect(new URL("/", request.url));
   }
+  if (request.nextUrl.pathname === "/login" && !auth) {
+    return response;
+  }
 
   if (!auth) {
     const id = await isRefreshToken(request);
