@@ -70,6 +70,6 @@ export async function middleware(request) {
 }
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|vercel.svg|next.svg|api/login|api/refresh-token|signup|api/signup).*)",
+    "/((?!_next/static|_next/image|favicon.ico|vercel.svg|next.svg|api/login|api/refresh-token|signup|api/signup|api/logout).*)",
   ],
 };

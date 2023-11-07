@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import {
@@ -10,8 +11,19 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 
 function Navbar() {
+  const router = useRouter();
+
+  async function handleLogout() {
+    const logoutStatus = await fetch("/api/logout")
+      .then((data) => data.json())
+      .then((data) => data);
+    if (logoutStatus.message === "Success") {
+      return router.push("/login");
+    }
+  }
   // const { isLoggedIn } = useAuth();
   // isLoggedIn();
 
@@ -23,7 +35,7 @@ function Navbar() {
       >
         Connect
       </Link>
-      <ul className="font-semibold  flex justify-around items-center text-xl">
+      <ul className="font-semibold  flex justify-around items-center md:text-xl">
         <Link
           href="/profile"
           className="hover:bg-accent h-10 px-4 py-2 rounded-md"
@@ -33,12 +45,12 @@ function Navbar() {
         {/* <Link></Link> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="font-semibold">
-            <Button variant="ghost" className="text-xl">
+            <Button variant="ghost" className="md:text-xl">
               {" "}
               More <ChevronDownIcon className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="capitalize">
+          <DropdownMenuContent className="capitalize mr-2">
             <DropdownMenuLabel>Account options</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup className="">
@@ -46,7 +58,7 @@ function Navbar() {
                 <Link href="/account-options">Options</Link>
               </DropdownMenuItem>
               <DropdownMenuItem className="focus:bg-transparent">
-                <Button variant="link" className="px-0">
+                <Button variant="link" className="px-0" onClick={handleLogout}>
                   Logout
                 </Button>
               </DropdownMenuItem>
