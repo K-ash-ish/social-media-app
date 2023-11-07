@@ -42,10 +42,10 @@ function PostPage({ params }) {
   return (
     <Card
       key={post?.id}
-      className="md:w-1/2 h-5/6 md:mx-auto bg-slate-50 border-dashed border-blue-400 "
+      className="md:w-1/2 h-5/6 w-[95%] mx-auto bg-slate-50 border-dashed border-blue-400 "
     >
-      <CardHeader className="">
-        <CardContent className="flex flex-col gap-2 h-full p-0 ">
+      <CardHeader className="h-full">
+        <CardContent className="flex flex-col gap-2  h-full p-0 ">
           <div className="   p-4   rounded-xl border-dashed border-red-200 border-2">
             <div className="flex flex-col gap-1">
               <div className="capitalize font-semibold flex flex-col gap-1 max-w-fit">
@@ -88,8 +88,8 @@ function PostPage({ params }) {
           <h3 className="text-base font-semibold underline underline-offset-4 my-2  decoration-blue-400">
             Comments:
           </h3>
-          <ScrollArea className="h-52 ">
-            {allComments.map((comment) => {
+          <ScrollArea className="max-h-1/2 ">
+            {allComments?.map((comment) => {
               return (
                 <div
                   key={comment.id}
