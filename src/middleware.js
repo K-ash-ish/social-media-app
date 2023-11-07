@@ -43,6 +43,10 @@ export async function middleware(request) {
   const response = NextResponse.next();
   const auth = await isAuthenticated(request);
 
+  if (request.nextUrl.pathname === "/login" && auth) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   if (!auth) {
     const id = await isRefreshToken(request);
     if (!id) {
@@ -63,6 +67,6 @@ export async function middleware(request) {
 }
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|vercel.svg|next.svg|login|api/login|api/refresh-token|signup|api/signup).*)",
+    "/((?!_next/static|_next/image|favicon.ico|vercel.svg|next.svg|api/login|api/refresh-token|signup|api/signup).*)",
   ],
 };
