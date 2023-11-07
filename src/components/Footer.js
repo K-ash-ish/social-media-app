@@ -2,8 +2,8 @@ import Link from "next/link";
 
 function Footer() {
   return (
-    <footer className="rounded-md md:w-1/2 md:mx-auto text-lg  mx-2 h-16 p-2 flex justify-between items-end">
-      <p>
+    <footer className="rounded-md md:w-1/2  md:mx-auto   h-16 md:p-2 md:flex md:flex-row flex flex-col items-center justify-center gap-2  md:justify-between md:items-center ">
+      <div className="">
         Built using{" "}
         <a
           target="_blank"
@@ -17,8 +17,9 @@ function Footer() {
         <span className="underline decoration-blue-400 underline-offset-4">
           Kashish
         </span>
-      </p>
-      <ul className="w-1/4 flex justify-around items-center">
+        ❤️
+      </div>
+      <ul className=" md:flex md:justify-around md:items-center  flex  gap-8">
         <li>
           <a target="_blank" href="https://github.com/K-ash-ish" rel="noopener">
             Github

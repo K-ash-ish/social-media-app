@@ -28,6 +28,9 @@ export function useAuth() {
         return data;
       });
   };
+  const isLoggedIn = async () => {
+    // console.log(cookies().getAll());
+  };
 
-  return { login, signUp };
+  return { login, signUp, isLoggedIn };
 }

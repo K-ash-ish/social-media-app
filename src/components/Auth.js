@@ -14,8 +14,8 @@ import Link from "next/link";
 function Auth(props) {
   const { title, description, form, onSubmit, isLoading, errorMessage } = props;
   return (
-    <div className="rounded-md md:w-1/2 md:mx-auto h-5/6 flex items-center border-2">
-      <Card className="w-[350px] mx-auto  ">
+    <div className="rounded-md md:w-1/2  w-5/6 mx-auto h-5/6 flex items-center md:border-2">
+      <Card className="md:w-[350px] w-full mx-auto  ">
         <CardHeader>
           <CardTitle>{title}</CardTitle>
           <CardDescription>{description}</CardDescription>

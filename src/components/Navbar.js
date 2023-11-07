@@ -16,14 +16,14 @@ function Navbar() {
   // isLoggedIn();
 
   return (
-    <nav className=" rounded-md md:w-1/2 md:mx-auto mx-2 h-16 p-2 flex justify-between items-center">
+    <nav className="rounded-md md:w-1/2  md:mx-auto   h-16 md:p-2 flex flex-row  justify-between items-center  ">
       <Link
         href="/"
         className="text-2xl font-bold uppercase text-blue-500 mx-2"
       >
         Connect
       </Link>
-      <ul className="font-semibold w-1/3 flex justify-around items-center text-xl">
+      <ul className="font-semibold  flex justify-around items-center text-xl">
         <Link
           href="/profile"
           className="hover:bg-accent h-10 px-4 py-2 rounded-md"
