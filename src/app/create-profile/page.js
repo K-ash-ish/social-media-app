@@ -24,7 +24,6 @@ const formSchema = z.object({
 });
 
 function ProfileForm() {
-  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,7 +52,11 @@ function ProfileForm() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormFieldComp form={form} fieldName="bio" />
               <FormFieldComp form={form} fieldName="name" />
-              <FormFieldComp form={form} fieldName="userHandle" />
+              <FormFieldComp
+                form={form}
+                fieldName="userHandle"
+                required={true}
+              />
               <FormFieldComp form={form} fieldName="profilePic" />
               <Button type="submit">Submit</Button>
             </form>

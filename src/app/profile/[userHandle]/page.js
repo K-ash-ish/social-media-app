@@ -9,7 +9,6 @@ function OtherUserProfile({ params }) {
   const [isFollowing, setIsFollowing] = useState(false);
 
   const { profileData } = useUserProfile(userHandle);
-
   useEffect(() => {
     if (profileData?.isFollowing) {
       setIsFollowing(true);

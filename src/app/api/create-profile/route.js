@@ -28,7 +28,6 @@ export async function POST(req) {
       accessLevel: "user",
       email: isTokenverified?.payload?.email,
       id: isTokenverified?.payload?.id,
-
       userHandle: profileDetails?.userHandle,
       profileId: newProfile.id,
     });

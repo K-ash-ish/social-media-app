@@ -42,6 +42,11 @@ export async function POST(req) {
         httpOnly: true,
         expires: Date.now() + 7 * 86400 * 1000,
       });
+      cookies().set({
+        name: "isLoggedIn",
+        value: true,
+        expires: Date.now() + 7 * 86400 * 1000,
+      });
 
       const userProfile = await prisma.profile.findFirst({
         where: {
