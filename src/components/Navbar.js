@@ -45,15 +45,15 @@ function Navbar() {
       >
         Connect
       </Link>
-      <ul className="font-semibold  flex justify-around items-center md:text-xl">
-        <Link
-          href="/profile"
-          className="hover:bg-accent h-10 px-4 py-2 rounded-md"
-        >
-          Profile
-        </Link>
-        {/* <Link></Link> */}
-        {isLoggedIn && (
+      {isLoggedIn && (
+        <ul className="font-semibold  flex justify-around items-center md:text-xl">
+          <Link
+            href="/profile"
+            className="hover:bg-accent h-10 px-4 py-2 rounded-md"
+          >
+            Profile
+          </Link>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="font-semibold">
               <Button variant="ghost" className="md:text-xl">
@@ -80,8 +80,8 @@ function Navbar() {
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-        )}
-      </ul>
+        </ul>
+      )}
     </nav>
   );
 }
