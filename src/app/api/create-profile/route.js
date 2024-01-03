@@ -19,7 +19,7 @@ export async function POST(req) {
         bio: profileDetails?.bio,
         name: profileDetails?.name,
         userHandle: profileDetails?.userHandle,
-        profilePic: profileDetails?.profilePic,
+        pictureUrl: profileDetails?.pictureUrl,
         userId: isTokenverified.payload.id,
       },
     });

@@ -12,32 +12,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
-import { useUserPosts } from "@/hooks/useUserPosts";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { UploadButton } from "@uploadthing/react";
+import { useState } from "react";
 
 const formSchema = z.object({
   bio: z.string(),
   name: z.string(),
   userHandle: z.string().min(4).max(15),
-  profilePic: z.string(),
+  pictureUrl: z.string(),
 });
 
 function ProfileForm() {
+  const [pictureUrl, setPictureUrl] = useState("");
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       bio: "",
       name: "",
       userHandle: "",
-      profilePic: "",
+      pictureUrl: "",
     },
   });
   const { createProfile } = useUserProfile();
 
   function onSubmit(values) {
-    const { bio, name, userHandle, profilePic } = values;
-    createProfile(bio, name, userHandle, profilePic);
+    const { bio, name, userHandle } = values;
+    createProfile(bio, name, userHandle, pictureUrl);
   }
 
   return (
@@ -57,7 +58,20 @@ function ProfileForm() {
                 fieldName="userHandle"
                 required={true}
               />
-              <FormFieldComp form={form} fieldName="profilePic" />
+              <UploadButton
+                endpoint="imageUploader"
+                value
+                onClientUploadComplete={(res) => {
+                  setPictureUrl(res[0].url);
+                  console.log("Files: ", res);
+                  alert("Upload Completed");
+                }}
+                onUploadError={(error) => {
+                  // Do something with the error.
+                  alert(`ERROR! ${error.message}`);
+                }}
+              />
+              {/* <FormFieldComp form={form} fieldName="profilePic" /> */}
               <Button type="submit">Submit</Button>
             </form>
           </Form>

@@ -98,10 +98,7 @@ function PostPage({ params }) {
                   <div className="flex items-center gap-2">
                     <Avatar className="">
                       <AvatarImage
-                        src={
-                          comment?.author?.profilePic ||
-                          "https://github.com/shadcn.png"
-                        }
+                        src={comment?.author?.profileUrl}
                         alt="@shadcn"
                       />
                       <AvatarFallback>CN</AvatarFallback>

@@ -54,7 +54,7 @@ model Profile {
   bio        String?
   name       String?
   userHandle String  @unique
-  profilePic String?
+  pictureUrl String?
 
   userId       Int      @unique
   currentUsers Follow[] @relation("currentUserFollow")

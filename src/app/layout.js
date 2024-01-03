@@ -4,7 +4,9 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import { Montserrat } from "next/font/google";
 import AuthProvider from "./context/AuthContext";
-
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import ourFileRouter from "./api/uploadthing/core";
 const roboto = Montserrat({
   subsets: ["latin"],
 });
@@ -21,6 +23,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="h-screen w-full">
         <AuthProvider>
+          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
           <Navbar />
           {children}
           <Footer />

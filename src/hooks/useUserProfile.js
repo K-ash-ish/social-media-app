@@ -6,11 +6,13 @@ export function useUserProfile(userHandle) {
   const [profileData, setProfileData] = useState();
 
   useEffect(() => {
-    fetch(`/api/profile/${userHandle}`)
-      .then(async (res) => res.json())
-      .then((data) => {
-        setProfileData(data?.message);
-      });
+    if (userHandle) {
+      fetch(`/api/profile/${userHandle}`)
+        .then(async (res) => res.json())
+        .then((data) => {
+          setProfileData(data?.message);
+        });
+    }
   }, []);
 
   useEffect(() => {
@@ -19,13 +21,13 @@ export function useUserProfile(userHandle) {
     }
   }, [profileData]);
 
-  const createProfile = async (bio, name, userHandle, profilePic) => {
+  const createProfile = async (bio, name, userHandle, pictureUrl) => {
     return fetch("api/create-profile", {
       body: JSON.stringify({
         bio,
         name,
         userHandle,
-        profilePic,
+        pictureUrl,
       }),
       method: "POST",
       credentials: "include",

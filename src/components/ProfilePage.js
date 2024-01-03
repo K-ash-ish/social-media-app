@@ -26,10 +26,7 @@ function ProfilePage(props) {
         <div className="flex  justify-between">
           <div className="flex space-x-4">
             <Avatar>
-              <AvatarImage
-                src={profileData?.profilePic || "https://github.com/shadcn.png"}
-                alt="@shadcn"
-              />
+              <AvatarImage src={profileData?.pictureUrl} alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
