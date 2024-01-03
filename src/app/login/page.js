@@ -35,7 +35,7 @@ function Login() {
     setIsLoading(false);
     if (loginData.error) {
       setErrorMessage(loginData.error);
-    } else if (loginData.message === null) {
+    } else if (loginData.message === "Not Found") {
       setIsLoggedIn(true);
       return router.push("/create-profile");
     } else {

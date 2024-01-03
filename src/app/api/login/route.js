@@ -55,7 +55,10 @@ export async function POST(req) {
           },
         },
       });
-      return NextResponse.json({ message: userProfile }, { status: 200 });
+      return NextResponse.json(
+        { message: userProfile || "Not Found" },
+        { status: 200 }
+      );
     }
   }
   return NextResponse.json({ error: "wrong credentials" }, { status: 401 });

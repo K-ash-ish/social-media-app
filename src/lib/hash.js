@@ -23,17 +23,3 @@ export const compare = async (hash, userInput) => {
     });
   });
 };
-
-// bcrypt.hash(myPlaintextPassword, saltRounds, function (err, hash) {
-//   if (err) {
-//     throw err;
-//   }
-//   console.log("hash - ", hash);
-
-//   bcrypt.compare(myPlaintextPassword, hash, function (err, result) {
-//     if (err) {
-//       throw err;
-//     }
-//     console.log(result);
-//   });
-// });
