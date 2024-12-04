@@ -48,11 +48,11 @@ function ProfilePage(props) {
             <span>Following: {followings || 0}</span>
             <span>Followers: {followers || 0}</span>
           </div>
-          {/* {isEditable && (
+          {isEditable && (
             <Button asChild>
               <Link href="/edit-profile">Edit Profile</Link>
             </Button>
-          )} */}
+          )}
         </div>
         {isEditable && (
           <Button asChild className="md:self-end">

@@ -11,31 +11,11 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "@/app/context/AuthContext";
+import { useAuth } from "@/app/context/AuthContext";
 
 function Navbar() {
-  const router = useRouter();
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
-
-  useEffect(() => {
-    const loginStatus = Cookies.get("isLoggedIn");
-    if (loginStatus === "true") {
-      setIsLoggedIn(true);
-    }
-  }, []);
-
-  async function handleLogout() {
-    const logoutStatus = await fetch("/api/logout")
-      .then((data) => data.json())
-      .then((data) => data);
-    if (logoutStatus.message === "Success") {
-      setIsLoggedIn(false);
-      return router.push("/login");
-    }
-  }
+  const { logout, isLoggedIn, currentUser } = useAuth();
+  console.log(currentUser);
 
   return (
     <nav className="rounded-md md:w-1/2  md:mx-auto   h-16 md:p-2 flex flex-row  justify-between items-center  ">
@@ -69,11 +49,7 @@ function Navbar() {
                   <Link href="/account-options">Options</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="focus:bg-transparent">
-                  <Button
-                    variant="link"
-                    className="px-0"
-                    onClick={handleLogout}
-                  >
+                  <Button variant="link" className="px-0" onClick={logout}>
                     Logout
                   </Button>
                 </DropdownMenuItem>

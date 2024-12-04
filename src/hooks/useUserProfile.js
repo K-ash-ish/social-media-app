@@ -22,7 +22,7 @@ export function useUserProfile(userHandle) {
   }, [profileData]);
 
   const createProfile = async (bio, name, userHandle, pictureUrl) => {
-    return fetch("api/create-profile", {
+    return fetch("api/edit-profile", {
       body: JSON.stringify({
         bio,
         name,
