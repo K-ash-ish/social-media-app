@@ -22,10 +22,10 @@ export async function POST(req) {
     if (isValidPassword) {
       const accessToken = await sign({
         accessLevel: "user",
-        email: reqUser.email,
         id: reqUser.id,
         userHandle: reqUser.profile?.userHandle,
         profileId: reqUser.profile?.id || null,
+        name: reqUser.profile.name,
       });
       const refreshToken = await refreshSign({
         id: reqUser.id,
@@ -42,12 +42,6 @@ export async function POST(req) {
         httpOnly: true,
         expires: Date.now() + 7 * 86400 * 1000,
       });
-      cookies().set({
-        name: "isLoggedIn",
-        value: true,
-        expires: Date.now() + 7 * 86400 * 1000,
-      });
-
       const userProfile = await prisma.profile.findFirst({
         where: {
           userId: {

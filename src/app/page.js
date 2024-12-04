@@ -1,6 +1,5 @@
 "use client";
 import PostCard from "@/components/PostCard";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUserPosts } from "@/hooks/useUserPosts";
 
 function Feed() {
