@@ -15,7 +15,6 @@ import { useAuth } from "@/app/context/AuthContext";
 
 function Navbar() {
   const { logout, isLoggedIn, currentUser } = useAuth();
-  console.log(currentUser);
 
   return (
     <nav className="rounded-md md:w-1/2  md:mx-auto   h-16 md:p-2 flex flex-row  justify-between items-center  ">
