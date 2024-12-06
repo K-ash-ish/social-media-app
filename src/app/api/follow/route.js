@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   const { profileData } = await req.json();
+  console.log("ProfileData: ", profileData);
   const accessToken = cookies().get("accessToken")?.value;
   const isTokenVerified = await verify(accessToken);
   if (!isTokenVerified) {
@@ -27,12 +28,12 @@ export async function POST(req) {
     },
   });
   if (isAlreadyFollowing) {
-    await prisma.follow.delete({
+    const data = await prisma.follow.delete({
       where: {
         id: isAlreadyFollowing?.id,
       },
     });
-    return NextResponse.json("Unfollowed");
+    return NextResponse.json({ message: "Unfollowed", data });
   }
   const newFollower = await prisma.follow.create({
     data: {

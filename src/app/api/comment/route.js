@@ -22,7 +22,10 @@ export async function POST(req) {
         authorId: profileId,
       },
     });
-    return NextResponse.json({ message: newComment }, { status: 200 });
+    return NextResponse.json(
+      { message: "Fetch successfull", data: newComment },
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json(

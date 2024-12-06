@@ -36,6 +36,7 @@ export async function POST(req) {
         id: isAlreadyLiked.id,
       },
     });
+    console.log(removeLike);
     return NextResponse.json(
       { message: "Like removed", isLiked: false },
       { status: 200 }
@@ -49,6 +50,7 @@ export async function POST(req) {
         authorId: isTokenVerified?.payload?.profileId,
       },
     });
+    console.log("newLike: ", newLike);
     return NextResponse.json(
       { message: "Like added", isLiked: true },
       { status: 200 }

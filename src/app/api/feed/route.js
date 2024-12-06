@@ -42,5 +42,8 @@ export async function GET() {
       },
     },
   });
-  return NextResponse.json({ message: posts }, { status: 200 });
+  return NextResponse.json(
+    { message: "Posts fetched successfully", data: posts },
+    { status: 200 }
+  );
 }

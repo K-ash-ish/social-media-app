@@ -16,7 +16,10 @@ export async function POST(req) {
         content: reqJson.content,
       },
     });
-    return NextResponse.json(newPost);
+    return NextResponse.json({
+      message: "Post created successfully",
+      data: newPost,
+    });
   }
   return NextResponse.json({ error: "Something went wrong" }, { status: 400 });
 }

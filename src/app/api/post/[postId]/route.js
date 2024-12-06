@@ -26,5 +26,5 @@ export async function GET(req, context) {
       },
     },
   });
-  return NextResponse.json({ message: "success", post }, { status: 200 });
+  return NextResponse.json({ message: "success", data: post }, { status: 200 });
 }

@@ -32,5 +32,8 @@ export async function GET() {
       following: true,
     },
   });
-  return NextResponse.json({ message: userProfile }, { status: 200 });
+  return NextResponse.json(
+    { message: "Profile fetched successfully", data: userProfile },
+    { status: 200 }
+  );
 }

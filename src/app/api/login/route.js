@@ -50,7 +50,7 @@ export async function POST(req) {
         },
       });
       return NextResponse.json(
-        { message: userProfile || "Not Found" },
+        { data: userProfile, message: "Login Successfull" },
         { status: 200 }
       );
     }

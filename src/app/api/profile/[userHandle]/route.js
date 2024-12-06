@@ -54,11 +54,17 @@ export async function GET(req, context) {
 
     if (isAlreadyFollowing) {
       return NextResponse.json(
-        { message: { ...userProfile, isFollowing: true } },
+        {
+          message: "Profile fetched successfully",
+          data: { ...userProfile, isFollowing: true },
+        },
         { status: 200 }
       );
     }
-    return NextResponse.json({ message: userProfile }, { status: 200 });
+    return NextResponse.json(
+      { message: "Fetched successfully", data: userProfile },
+      { status: 200 }
+    );
   }
   return NextResponse.json({ message: "Not found" }, { status: 200 });
 }
