@@ -15,7 +15,6 @@ export async function POST(req) {
       profile: true,
     },
   });
-
   const newAccessToken = await sign({
     accessLevel: "user",
     email: currentUser?.email,
@@ -33,6 +32,5 @@ export async function POST(req) {
     httpOnly: true,
     expires: Date.now() + 15 * 60 * 1000,
   });
-
   return NextResponse.json({ newAccessToken });
 }
