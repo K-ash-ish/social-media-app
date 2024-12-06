@@ -1,13 +1,20 @@
 "use client";
-
 import ProfilePage from "@/components/ProfilePage";
-import { useCurrentProfile } from "@/hooks/useCurrentProfile";
-import { useRouter } from "next/navigation";
-
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 function UserProfile() {
-  const profileData = useCurrentProfile();
+  const { data, isLoading } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      return fetch("/api/profile")
+        .then(async (res) => res.json())
+        .then((data) => data);
+    },
+  });
+  if (isLoading) {
+    return <h1>Loadingg....</h1>;
+  }
+  const { data: profileData } = data;
   return <ProfilePage profileData={profileData} isEditable={true} />;
 }
 

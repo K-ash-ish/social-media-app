@@ -1,21 +1,42 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useFollow } from "@/hooks/useFollow";
-import PostCard from "./PostCard";
+import { PostCard } from "@/app/page";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 function ProfilePage(props) {
-  const { profileData, isEditable, isFollowing, setIsFollowing } = props;
-
+  const { profileData, isEditable } = props;
+  const [isFollowing, setIsFollowing] = useState(profileData.isFollowing);
   const followings = profileData?.currentUsers?.length;
   const followers = profileData?.following?.length;
-
-  const follow = useFollow();
+  const { isPending, isSuccess, isError, mutate, data } = useMutation({
+    mutationFn: async (data) => {
+      return fetch("/api/follow", {
+        method: "POST",
+        body: JSON.stringify({
+          profileData: data,
+        }),
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          return data;
+        });
+    },
+    onSuccess: (data) => {
+      if (data.message === "Unfollowed") {
+        setIsFollowing(false);
+      }
+      setIsFollowing(true);
+    },
+  });
 
   function handleFollow() {
-    follow(profileData, isFollowing, setIsFollowing);
+    mutate(profileData);
   }
 
   return profileData === "Not Authorised" ? (

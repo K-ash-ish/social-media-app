@@ -1,21 +1,25 @@
 "use client";
 import ProfilePage from "@/components/ProfilePage";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 function OtherUserProfile({ params }) {
   const { userHandle } = params;
   const [isEditable, setIsEditable] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
-
-  const { profileData } = useUserProfile(userHandle);
-  useEffect(() => {
-    if (profileData?.isFollowing) {
-      setIsFollowing(true);
-    }
-  }, [profileData]);
-
-  if (profileData === "Not found") {
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["profle", userHandle],
+    queryFn: async () => {
+      return fetch(`/api/profile/${userHandle}`)
+        .then(async (res) => res.json())
+        .then((data) => data);
+    },
+  });
+  if (isLoading) {
+    return "Loading...";
+  }
+  const { message, data: profileData } = data; 
+  if (message === "Not found") {
     return "User Not Found";
   }
 
@@ -23,8 +27,6 @@ function OtherUserProfile({ params }) {
     <ProfilePage
       profileData={profileData}
       isEditable={isEditable}
-      isFollowing={isFollowing}
-      setIsFollowing={setIsFollowing}
     />
   );
 }

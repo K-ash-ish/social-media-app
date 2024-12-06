@@ -7,6 +7,7 @@ import AuthProvider from "./context/AuthContext";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import ourFileRouter from "./api/uploadthing/core";
+import QueryProvider from "./QueryProvider";
 const roboto = Montserrat({
   subsets: ["latin"],
   preload: false,
@@ -21,12 +22,16 @@ export default function RootLayout({ children }) {
       </head>
       <body className={roboto.className}>
         <div className="h-screen w-full">
-          <AuthProvider>
-            <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-            <Navbar />
-            {children}
-            <Footer />
-          </AuthProvider>
+          <QueryProvider>
+            <AuthProvider>
+              <NextSSRPlugin
+                routerConfig={extractRouterConfig(ourFileRouter)}
+              />
+              <Navbar />
+              {children}
+              <Footer />
+            </AuthProvider>
+          </QueryProvider>
         </div>
       </body>
     </html>
