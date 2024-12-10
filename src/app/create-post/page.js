@@ -1,5 +1,4 @@
 "use client";
-import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
@@ -8,20 +7,14 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import FormFieldComp from "@/components/FormFieldComp";
-import { useUserPosts } from "@/hooks/useUserPosts";
+import { useCreatePost } from "@/hooks/usePost";
+import { useForm } from "react-hook-form";
+import { Variable } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(2).max(30),
@@ -29,9 +22,9 @@ const formSchema = z.object({
 });
 
 function CreatePost() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const { createPost } = useUserPosts();
+  const { createPostMutation, isCreatePostPending, postVariable } =
+    useCreatePost();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,12 +32,10 @@ function CreatePost() {
       content: "",
     },
   });
-
   function onSubmit(values) {
-    const { title, content } = values;
-    createPost(title, content);
+    createPostMutation(values);
   }
-
+  console.log(postVariable);
   return (
     <div className="flex h-screen items-center">
       <Card className="w-[350px] mx-auto  ">
@@ -67,9 +58,9 @@ function CreatePost() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Publishing" : "Publish"}
-              </Button>{" "}
+              <Button type="submit" disabled={isCreatePostPending}>
+                {isCreatePostPending ? "Publishing" : "Publish"}
+              </Button>
             </form>
           </Form>
         </CardContent>

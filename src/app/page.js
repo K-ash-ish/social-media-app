@@ -1,5 +1,6 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAllPosts } from "@/hooks/usePost";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
@@ -18,22 +19,19 @@ export function PostCard({ id, userHandle, content }) {
   );
 }
 function Feed() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["posts"],
-    queryFn: async () => {
-      return fetch("/api/feed")
-        .then((res) => res.json())
-        .then((data) => data);
-    },
-  });
-  if (isLoading) {
+  const { allPosts, isAllPostLoading } = useAllPosts();
+  if (isAllPostLoading) {
     return (
-      <div className=" md:w-1/2 min-h-[83%] md:mx-auto  m-4  ">
-        <Card className="animate-pulse bg-slate-100 h-10" />
+      <div className=" md:w-1/2 min-h-[83%] md:mx-auto flex flex-col gap-4  m-4  ">
+        {Array(3)
+          .fill()
+          .map((_, i) => {
+            return <Card key={i} className="animate-pulse bg-slate-100 h-16" />;
+          })}
       </div>
     );
   }
-  const { data: posts } = data;
+  const { data: posts } = allPosts;
 
   return (
     <div className=" md:w-1/2 min-h-[83%] md:mx-auto  m-4  ">

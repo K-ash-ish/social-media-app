@@ -10,7 +10,9 @@ import { useEffect, useState } from "react";
 
 function ProfilePage(props) {
   const { profileData, isEditable } = props;
-  const [isFollowing, setIsFollowing] = useState(profileData.isFollowing);
+  const [isFollowing, setIsFollowing] = useState(
+    profileData?.isFollowing || false
+  );
   const followings = profileData?.currentUsers?.length;
   const followers = profileData?.following?.length;
   const { isPending, isSuccess, isError, mutate, data } = useMutation({
@@ -29,9 +31,9 @@ function ProfilePage(props) {
     },
     onSuccess: (data) => {
       if (data.message === "Unfollowed") {
-        setIsFollowing(false);
+        setIsFollowing(!isFollowing);
       }
-      setIsFollowing(true);
+      setIsFollowing(!isFollowing);
     },
   });
 
@@ -58,7 +60,11 @@ function ProfilePage(props) {
             </div>
           </div>
           {!isEditable && (
-            <Button className="self-end" onClick={handleFollow}>
+            <Button
+              className="self-end"
+              onClick={handleFollow}
+              disabled={isPending}
+            >
               {isFollowing ? "Following" : "Follow"}
             </Button>
           )}
