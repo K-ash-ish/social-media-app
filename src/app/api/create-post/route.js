@@ -4,22 +4,29 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  const reqJson = await req.json();
-  const currentUser = cookies().get("accessToken")?.value;
-  const isValidUser = await verify(currentUser);
-  if (isValidUser) {
-    const newPost = await prisma.post.create({
-      data: {
-        authorId: isValidUser.payload.profileId,
-        published: true,
-        title: reqJson.title,
-        content: reqJson.content,
-      },
-    });
-    return NextResponse.json({
-      message: "Post created successfully",
-      data: newPost,
-    });
+  const { title, content } = await req.json();
+  const accessToken = cookies().get("accessToken")?.value;
+  if (!accessToken) {
+    return NextResponse.json({ message: "Not Authorised" }, { status: 400 });
   }
-  return NextResponse.json({ error: "Something went wrong" }, { status: 400 });
+  const isTokenVerified = await verify(accessToken);
+  if (!isTokenVerified) {
+    return NextResponse.json({ message: "Not Authorised" }, { status: 400 });
+  }
+  const profileId = isTokenVerified.payload.profileId;
+  const newPost = await prisma.post.create({
+    data: {
+      authorId: profileId,
+      published: true,
+      title: title,
+      content: content,
+    },
+  });
+  return NextResponse.json(
+    {
+      message: "Success",
+      data: newPost,
+    },
+    { status: 200 }
+  );
 }

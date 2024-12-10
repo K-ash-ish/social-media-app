@@ -22,7 +22,12 @@ export async function GET() {
       },
     },
     include: {
-      user: true,
+      user: {
+        select: {
+          email: true,
+          id: true,
+        },
+      },
       posts: {
         orderBy: {
           createdAt: "desc", // Order posts by the 'createdAt' field in descending order
