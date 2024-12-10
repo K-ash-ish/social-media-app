@@ -65,7 +65,6 @@ export function useCreatePost() {
     isError: isCreatePostError,
     data: newPost,
     mutate: createPostMutation,
-    variables: postVariable,
   } = useMutation({
     mutationFn: (post) => {
       const { title, content } = post;
@@ -97,7 +96,6 @@ export function useCreatePost() {
     isCreatePostPending,
     isCreatePostSuccess,
     newPost,
-    postVariable,
     createPostMutation,
   };
 }

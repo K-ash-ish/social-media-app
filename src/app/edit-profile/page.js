@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import {  z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import FormFieldComp from "@/components/FormFieldComp";
@@ -12,21 +12,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useUserProfile } from "@/hooks/useUserProfile";
 import { UploadButton } from "@uploadthing/react";
 import { useState } from "react";
+import { useCurrentProfile, useEditProfile } from "@/hooks/useProfile";
 
 const formSchema = z.object({
   bio: z.string(),
   name: z.string(),
-  userHandle: z.string().min(4).max(15),
+  userHandle: z.string().min(3).max(15).optional(),
   pictureUrl: z.string(),
 });
+const editFormSchema = formSchema.omit({ userHandle: true });
 
 function ProfileForm() {
-  const [pictureUrl, setPictureUrl] = useState("");
+  const [picture, setPicture] = useState({ url: "", name: "" });
+  const { profileData, isProfileLoading } = useCurrentProfile();
+  const { editProfileMutation, isEditProfilePending } = useEditProfile();
+
+  const schema = profileData?.data?.userHandle ? editFormSchema : formSchema;
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       bio: "",
       name: "",
@@ -34,13 +39,13 @@ function ProfileForm() {
       pictureUrl: "",
     },
   });
-  const { createProfile } = useUserProfile();
 
   function onSubmit(values) {
-    const { bio, name, userHandle } = values;
-    createProfile(bio, name, userHandle, pictureUrl);
+    editProfileMutation({ ...values, pictureUrl: picture.url });
   }
-
+  if (isProfileLoading) {
+    return <h1>Loading...</h1>;
+  }
   return (
     <div className="flex h-screen items-center">
       <Card className="w-[350px] mx-auto  ">
@@ -53,18 +58,24 @@ function ProfileForm() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormFieldComp form={form} fieldName="bio" />
               <FormFieldComp form={form} fieldName="name" />
-              <FormFieldComp
-                form={form}
-                fieldName="userHandle"
-                required={true}
-              />
+              {!profileData?.data?.userHandle && (
+                <FormFieldComp
+                  form={form}
+                  fieldName="userHandle"
+                  required={true}
+                />
+              )}
+              {picture?.name && (
+                <p className="text-center text-xs text-gray-400">
+                  {picture?.name}
+                </p>
+              )}
               <UploadButton
                 endpoint="imageUploader"
                 value
                 onClientUploadComplete={(res) => {
-                  setPictureUrl(res[0].url);
-                  console.log("Files: ", res);
-                  alert("Upload Completed");
+                  console.log(res);
+                  setPicture({ url: res[0].url, name: res[0].name });
                 }}
                 onUploadError={(error) => {
                   // Do something with the error.
@@ -72,7 +83,9 @@ function ProfileForm() {
                 }}
               />
               {/* <FormFieldComp form={form} fieldName="profilePic" /> */}
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={isEditProfilePending}>
+                Submit
+              </Button>
             </form>
           </Form>
         </CardContent>

@@ -17,7 +17,7 @@ function FormFieldComp({ form, fieldName, type, required }) {
             {fieldName} {required && <span className="text-red-500">*</span>}
           </FormLabel>
           <FormControl>
-            <Input placeholder={fieldName} type={`${type || +""}`} {...field} />
+            <Input {...field} placeholder={fieldName} type={`${type || +""}`} />
           </FormControl>
         </FormItem>
       )}

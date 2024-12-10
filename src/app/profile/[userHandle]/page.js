@@ -1,34 +1,32 @@
 "use client";
+import { useAuth } from "@/app/context/AuthContext";
 import ProfilePage from "@/components/ProfilePage";
-import { useUserProfile } from "@/hooks/useUserProfile";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useUserProfile } from "@/hooks/useProfile";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect } from "react";
 
 function OtherUserProfile({ params }) {
   const { userHandle } = params;
-  const [isEditable, setIsEditable] = useState(false);
-  const { data, isError, isLoading } = useQuery({
-    queryKey: ["profle", userHandle],
-    queryFn: async () => {
-      return fetch(`/api/profile/${userHandle}`)
-        .then(async (res) => res.json())
-        .then((data) => data);
-    },
-  });
-  if (isLoading) {
+  const { currentUser } = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (currentUser.userHandle === userHandle) {
+      router.push("/profile");
+    }
+  }, [currentUser]);
+
+  const { profileData, isProfileLoading, isProfileError } =
+    useUserProfile(userHandle);
+
+  if (isProfileLoading) {
     return "Loading...";
   }
-  const { message, data: profileData } = data; 
-  if (message === "Not found") {
+
+  if (profileData?.message === "Not found") {
     return "User Not Found";
   }
 
-  return (
-    <ProfilePage
-      profileData={profileData}
-      isEditable={isEditable}
-    />
-  );
+  return <ProfilePage profileData={profileData?.data} isEditable={false} />;
 }
 
 export default OtherUserProfile;

@@ -8,7 +8,7 @@ export async function GET(req, context) {
   const accessToken = cookies().get("accessToken")?.value;
   const isTokenVerified = await verify(accessToken);
   if (isTokenVerified?.payload?.userHandle === userHandle) {
-    return NextResponse.json({ message: "redirect user" }, { status: 200 });
+    return NextResponse.json({ message: "redirect" }, { status: 200 });
   }
   const userProfile = await prisma.profile.findFirst({
     where: {

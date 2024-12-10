@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import FormFieldComp from "@/components/FormFieldComp";
 import { useCreatePost } from "@/hooks/usePost";
 import { useForm } from "react-hook-form";
-import { Variable } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(2).max(30),
@@ -22,8 +21,7 @@ const formSchema = z.object({
 });
 
 function CreatePost() {
-  const { createPostMutation, isCreatePostPending, postVariable } =
-    useCreatePost();
+  const { createPostMutation, isCreatePostPending } = useCreatePost();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -35,7 +33,6 @@ function CreatePost() {
   function onSubmit(values) {
     createPostMutation(values);
   }
-  console.log(postVariable);
   return (
     <div className="flex h-screen items-center">
       <Card className="w-[350px] mx-auto  ">
