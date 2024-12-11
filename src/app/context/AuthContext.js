@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
+import { getQueryClient } from "../get-query-client";
 
 export const AuthContext = createContext();
 
@@ -14,13 +15,19 @@ const AuthProvider = ({ children }) => {
   const router = useRouter();
   useEffect(() => {
     async function fetchUser() {
-      const user = await fetch("/api/user", { credentials: "include" })
-        .then((res) => res.json())
-        .then((data) => data);
-      if (user) {
-        setCurrentUser(user.message);
-        setIsLoggedIn(true);
-      }
+      try {
+        const user = await fetch(
+          "/api/verify-user",
+          { method: "GET" },
+          { credentials: "include" }
+        )
+          .then((res) => res.json())
+          .then((data) => data);
+        if (user.message === "Success") {
+          setCurrentUser(user.data);
+          setIsLoggedIn(true);
+        }
+      } catch (error) {}
     }
 
     fetchUser();
@@ -49,6 +56,7 @@ const AuthProvider = ({ children }) => {
         message: { name, userHandle },
       } = loginData;
       setIsLoggedIn(true);
+      setErrorMessage("");
       setCurrentUser({ name, userHandle });
       const route = loginData.message === "Not Found" ? "/edit-profile" : "/";
       return router.push(route);
@@ -72,24 +80,27 @@ const AuthProvider = ({ children }) => {
 
     setIsLoading(false);
 
-    if (loginData.error) {
-      setErrorMessage(loginData.error);
+    if (signUpData.error) {
+      setErrorMessage(signUpData.error);
     } else {
       const {
         message: { name, userHandle },
       } = signUpData;
       setIsLoggedIn(true);
+      setErrorMessage("");
       setCurrentUser({ name, userHandle });
       return router.push("/edit-profile");
     }
   };
   const logout = async () => {
-    const response = await fetch("api/logout")
+    const queryClient = getQueryClient();
+    const res = await fetch("api/logout")
       .then((res) => res.json())
       .then((data) => data);
-    if (response.message === "Success") {
+    if (res.message === "success") {
       setIsLoggedIn(false);
-      return router.push("/login");
+      router.push("/login");
+      return queryClient.resetQueries();
     }
   };
   const value = {

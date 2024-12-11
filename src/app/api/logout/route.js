@@ -6,5 +6,5 @@ export async function GET() {
   cookies().delete("refreshToken");
   cookies().delete("isLoggedIn");
 
-  return NextResponse.json({ message: "Logout success" }, { status: 200 });
+  return NextResponse.json({ message: "success" }, { status: 200 });
 }

@@ -39,7 +39,10 @@ export async function POST(req) {
       expires: Date.now() + 15 * 60 * 1000,
     });
 
-    return NextResponse.json({ message: "success" }, { status: 200 });
+    return NextResponse.json(
+      { message: "success", data: newProfile },
+      { status: 200 }
+    );
   } catch (error) {
     console.log(error);
     return NextResponse.json(
