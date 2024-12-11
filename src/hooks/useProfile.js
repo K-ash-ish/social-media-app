@@ -1,3 +1,4 @@
+import { getQueryClient } from "@/app/get-query-client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -13,7 +14,6 @@ export function useCurrentProfile() {
   return { profileData, isProfileLoading };
 }
 export function useUserProfile(userHandle) {
-  const router = useRouter();
   const {
     data: profileData,
     isError: isProfileError,
@@ -28,16 +28,52 @@ export function useUserProfile(userHandle) {
   });
   return { profileData, isProfileError, isProfileLoading };
 }
-
+export function useCreateProfile() {
+  const router = useRouter();
+  const queryClient = getQueryClient();
+  const {
+    mutate: createProfileMutation,
+    data: createdProfile,
+    isPending: isCreateProfilePending,
+    isSuccess: isCreateProfileSuccess,
+  } = useMutation({
+    mutationFn: async (data) => {
+      const { bio, name, userHandle, pictureUrl } = data;
+      return fetch("api/create-profile", {
+        body: JSON.stringify({ bio, name, userHandle, pictureUrl }),
+        method: "POST",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => data)
+        .catch((e) => {
+          console.error(e);
+        });
+    },
+    onSuccess: async (data) => {
+      if (data.message === "success") {
+        await queryClient.invalidateQueries(["profile"]);
+        return router.push("/profile");
+      }
+    },
+  });
+  return {
+    createProfileMutation,
+    createdProfile,
+    isCreateProfilePending,
+    isCreateProfileSuccess,
+  };
+}
 export function useEditProfile() {
+  const queryClient = getQueryClient();
+  const router = useRouter();
   const {
     mutate: editProfileMutation,
     data: editedProfile,
     isPending: isEditProfilePending,
-    isSuccess: isEditProfileSUccess,
+    isSuccess: isEditProfileSuccess,
   } = useMutation({
     mutationFn: async (data) => {
-      const { bio, name, userHandle, pictureUrl } = data;
       const body = Object.fromEntries(
         Object.entries(data).filter(
           ([_, value]) => value !== undefined && value !== null && value !== ""
@@ -54,16 +90,30 @@ export function useEditProfile() {
           console.error(e);
         });
     },
-    onSuccess: (data) => {
-      //   if (data.message === "success") {
-      //     router.push("/profile");
-      //   }
+    onSettled: () => {
+      return router.push("/profile");
+    },
+    onSuccess: async (data) => {
+      if (data.message === "success") {
+        await queryClient.cancelQueries({
+          queryKey: ["profile"],
+        });
+        queryClient.setQueryData(["profile"], (old) => {
+          return {
+            ...old,
+            data: {
+              ...old.data,
+              ...data.data,
+            },
+          };
+        });
+      }
     },
   });
   return {
     editProfileMutation,
     isEditProfilePending,
-    isEditProfileSUccess,
+    isEditProfileSuccess,
     editedProfile,
   };
 }

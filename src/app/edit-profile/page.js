@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {  z } from "zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import FormFieldComp from "@/components/FormFieldComp";
@@ -14,7 +14,11 @@ import {
 } from "@/components/ui/card";
 import { UploadButton } from "@uploadthing/react";
 import { useState } from "react";
-import { useCurrentProfile, useEditProfile } from "@/hooks/useProfile";
+import {
+  useCreateProfile,
+  useCurrentProfile,
+  useEditProfile,
+} from "@/hooks/useProfile";
 
 const formSchema = z.object({
   bio: z.string(),
@@ -28,8 +32,9 @@ function ProfileForm() {
   const [picture, setPicture] = useState({ url: "", name: "" });
   const { profileData, isProfileLoading } = useCurrentProfile();
   const { editProfileMutation, isEditProfilePending } = useEditProfile();
-
+  const { createProfileMutation, isCreateProfilePending } = useCreateProfile();
   const schema = profileData?.data?.userHandle ? editFormSchema : formSchema;
+  const isPending = isEditProfilePending || isCreateProfilePending;
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -41,7 +46,11 @@ function ProfileForm() {
   });
 
   function onSubmit(values) {
-    editProfileMutation({ ...values, pictureUrl: picture.url });
+    if (profileData?.data?.userHandle) {
+      editProfileMutation({ ...values, pictureUrl: picture.url });
+    } else {
+      createProfileMutation({ ...values, pictureUrl: picture.url });
+    }
   }
   if (isProfileLoading) {
     return <h1>Loading...</h1>;
@@ -83,7 +92,7 @@ function ProfileForm() {
                 }}
               />
               {/* <FormFieldComp form={form} fieldName="profilePic" /> */}
-              <Button type="submit" disabled={isEditProfilePending}>
+              <Button type="submit" disabled={isPending}>
                 Submit
               </Button>
             </form>
