@@ -23,7 +23,7 @@ function Login() {
 
   async function onSubmit(values) {
     const { email, password } = values;
-    return await login(email, password);
+    return await login(email.toLowerCase(), password);
   }
 
   return (

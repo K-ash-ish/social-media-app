@@ -22,7 +22,7 @@ function SignUpPage() {
 
   async function onSubmit(values) {
     const { email, password } = values;
-    return await signUp(email, password);
+    return await signUp(email.toLowerCase(), password);
   }
 
   return (
