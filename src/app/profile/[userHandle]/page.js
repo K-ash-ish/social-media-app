@@ -1,9 +1,10 @@
 "use client";
 import { useAuth } from "@/app/context/AuthContext";
 import ProfilePage from "@/components/ProfilePage";
+import { ProfileShimmer } from "@/components/ProfileShimmer";
 import { useUserProfile } from "@/hooks/useProfile";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 
 function OtherUserProfile({ params }) {
   const { userHandle } = params;
@@ -17,9 +18,8 @@ function OtherUserProfile({ params }) {
 
   const { profileData, isProfileLoading, isProfileError } =
     useUserProfile(userHandle);
-
   if (isProfileLoading) {
-    return "Loading...";
+    return <ProfileShimmer />;
   }
 
   if (profileData?.message === "Not found") {
