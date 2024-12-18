@@ -33,10 +33,12 @@ export function useLikes(postId) {
   } = useQuery({
     queryKey: ["likes", postId],
     queryFn: async () => fetchLikes(postId),
-    select: (data) => ({
-      count: data?.data?.likes,
-      isLiked: data?.data?.isLiked ?? false,
-    }),
+    select: (data) => {
+      return {
+        isLiked: data?.data?.isLiked ?? false,
+        count: data?.data?.likes,
+      };
+    },
   });
 
   const {
@@ -51,10 +53,16 @@ export function useLikes(postId) {
         queryKey: ["likes", postId],
       });
       const previousLikesData = queryClient.getQueryData(["likes", postId]);
-      queryClient.setQueryData(["likes", postId], (old) => ({
-        ...old,
-        newLike,
-      }));
+      queryClient.setQueryData(["likes", postId], (old) => {
+          
+        return {
+          ...old,
+          data: {
+            isLiked: !old.data.isLiked,
+            likes: old.data.isLiked ? old.data?.likes - 1 : old.data?.likes + 1,
+          },
+        };
+      });
       return { previousLikesData };
     },
     onSuccess: (data) => {},

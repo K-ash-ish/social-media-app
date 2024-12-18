@@ -1,4 +1,6 @@
 "use client";
+import { getQueryClient } from "@/app/get-query-client";
+import { Comment, CommentShimmer } from "@/components/Comment";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -6,9 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useComments } from "@/hooks/useComments";
 import { useLikes } from "@/hooks/useLikes";
 import { useIndividualPost } from "@/hooks/usePost";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { pusherClient } from "@/lib/pusher";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function PostPage({ params }) {
   const { postId } = params;
@@ -20,8 +22,8 @@ function PostPage({ params }) {
     isCommentLoading,
     newComment,
     isNewCommentSuccess,
+    commentVariables,
   } = useComments(postId);
-
   const {
     isLikesError,
     isLikesLoading,
@@ -35,6 +37,35 @@ function PostPage({ params }) {
   const { postData, isPostError, isPostLoading, isPostSuccess } =
     useIndividualPost(postId);
 
+  useEffect(() => {
+    const channel = pusherClient.subscribe(postId);
+    const queryClient = getQueryClient();
+
+    channel.bind("like-updates", (newLike) => {
+      queryClient.setQueryData(["likes", postId], (old) => ({
+        ...old,
+        data: {
+          ...old?.data,
+          likes: newLike.likes,
+        },
+      }));
+    });
+    channel.bind("comment-updates", ({ newComment }) => {
+      console.log(newComment);
+      queryClient.setQueryData(["comments", postId], (old) => {
+        return {
+          ...old,
+          data: [...old.data, newComment],
+        };
+      });
+    });
+    return () => {
+      pusherClient.unsubscribe(postId);
+      channel.unbind("like-updates");
+      channel.unbind("comment-updates");
+    };
+  }, []);
+
   async function handleComment(e) {
     e.preventDefault();
     commentMutation(comment);
@@ -44,6 +75,7 @@ function PostPage({ params }) {
     e.preventDefault();
     likeMutation();
   }
+
   return (
     <Card className="md:w-1/2 h-5/6 w-[95%] mx-auto bg-slate-50 border-dashed border-blue-400 ">
       <CardHeader className="h-full">
@@ -74,7 +106,7 @@ function PostPage({ params }) {
                       onClick={handleLike}
                       variant="ghost"
                       className="underline underline-offset-2 border   hover:bg-primary hover:text-white h-10"
-                      disabled={likeMutation.isPending}
+                      disabled={isNewLikePending}
                     >
                       {likesData?.isLiked ? "Unlike" : "Like"}
                     </Button>
@@ -105,28 +137,16 @@ function PostPage({ params }) {
             {isCommentLoading ? (
               <div className="border-2 border-dotted border-rose-200 px-2 py-4 m-2 rounded-lg flex flex-col gap-2 ml-2 h-12 bg-slate-100 animate-pulse "></div>
             ) : (
-              commentsData?.data?.map(
-                ({ id, author: { name, userHandle, profileUrl }, content }) => {
-                  return (
-                    <div
-                      key={id}
-                      className="border-2 border-dotted border-rose-200 px-2 py-4 m-2 rounded-lg flex flex-col gap-2 ml-2 "
-                    >
-                      <div className="flex items-center gap-2">
-                        <Avatar className="">
-                          <AvatarImage src={profileUrl} alt="@shadcn" />
-                          <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col ">
-                          <h3 className="capitalize font-semibold">{name}</h3>
-                          <h4 className="text-xs">@{userHandle}</h4>
-                        </div>
-                      </div>
-                      <p className="ml-2">{content}</p>
-                    </div>
-                  );
-                }
-              )
+              commentsData?.data?.map((comment) => {
+                return <Comment key={comment.id} {...comment} />;
+              })
+            )}
+            {isNewComentPending && (
+              <CommentShimmer
+                comment={commentVariables}
+                userHandle="You"
+                name="You"
+              />
             )}
           </ScrollArea>
         </CardContent>

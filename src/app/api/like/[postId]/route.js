@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { verify } from "@/lib/jwt";
+import { pusherServer } from "@/lib/pusher";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -20,7 +21,7 @@ export async function GET(req, context) {
       _count: { select: { Like: true } },
       Like: {
         where: {
-          authorId: isTokenVerified?.payload?.profileI,
+          authorId: isTokenVerified?.payload?.profileId,
         },
         select: {
           id: true,
@@ -33,8 +34,11 @@ export async function GET(req, context) {
   const {
     _count: { Like: likes },
   } = likesData;
+  const isAlreadyLiked = likesData?.Like?.length > 0;
 
-  if (likesData?.Like?.length > 0) {
+  pusherServer.trigger(postId, "like-updates", { likes });
+
+  if (isAlreadyLiked) {
     return NextResponse.json(
       {
         message: "Likes fetched successfully",
@@ -43,6 +47,7 @@ export async function GET(req, context) {
       { status: 200 }
     );
   }
+
   return NextResponse.json({
     message: "Likes fetched successfully",
     data: {

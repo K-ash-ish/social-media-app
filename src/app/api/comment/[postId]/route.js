@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { verify } from "@/lib/jwt";
+import { pusherServer } from "@/lib/pusher";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -61,7 +62,18 @@ export async function POST(req) {
         postId: Number(postId),
         authorId: profileId,
       },
+      include: {
+        author: {
+          select: {
+            name: true,
+            userHandle: true,
+          },
+        },
+      },
     });
+
+    pusherServer.trigger(postId, "comment-updates", { newComment });
+
     return NextResponse.json(
       { message: "Comment Added successfully", data: newComment },
       { status: 200 }

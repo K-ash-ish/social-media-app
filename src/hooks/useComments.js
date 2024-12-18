@@ -1,6 +1,5 @@
 import { getQueryClient } from "@/app/get-query-client";
 import { useMutation, useQuery } from "@tanstack/react-query";
-
 const fetchComment = async (postId) => {
   const data = fetch(`/api/comment/${postId}`, {
     credentials: "include",
@@ -38,26 +37,33 @@ export function useComments(postId) {
     isSuccess: isNewCommentSuccess,
     mutate: commentMutation,
     data: newComment,
+    variables: commentVariables,
   } = useMutation({
+    mutationKey: ["comments", postId],
     mutationFn: (comment) => {
       return postComment(postId, comment);
     },
-    onMutate: async (newComment) => {
+    onMutate: async (comment) => {
       await queryClient.cancelQueries({
         queryKey: ["comments", postId],
       });
+      const newComment = {
+        id: new Date(),
+        createdAt: new Date(),
+        content: comment,
+        author: {
+          name: "You",
+          userHandle: "You",
+        },
+      };
       const previousComments = queryClient.getQueryData(["comments", postId]);
-      queryClient.setQueryData(["comments", postId], (old) => ({
-        ...old,
-        newComment,
-      }));
       return { previousComments };
     },
-    onSuccess: (data) => {
-      console.log("Cdata: ", data);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+    onSuccess: (data) => {},
+    onSettled: async () => {
+      if (queryClient.isMutating({ mutationKey: ["comments", postId] })) {
+        await queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      }
     },
   });
   return {
@@ -69,5 +75,6 @@ export function useComments(postId) {
     isNewComentPending,
     isNewCommentSuccess,
     newComment,
+    commentVariables,
   };
 }
