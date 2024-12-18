@@ -35,7 +35,7 @@ const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     setIsLoading(true);
-    const loginData = await fetch("api/login", {
+    const loginData = await fetch("/api/login", {
       body: JSON.stringify({
         email,
         password,
@@ -67,7 +67,7 @@ const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password) => {
     setIsLoading(true);
-    const signUpData = await fetch("api/signup", {
+    const signUpData = await fetch("/api/signup", {
       body: JSON.stringify({
         email,
         password,
@@ -97,7 +97,7 @@ const AuthProvider = ({ children }) => {
   };
   const logout = async () => {
     const queryClient = getQueryClient();
-    const res = await fetch("api/logout")
+    const res = await fetch("/api/logout")
       .then((res) => res.json())
       .then((data) => data);
     if (res.message === "success") {

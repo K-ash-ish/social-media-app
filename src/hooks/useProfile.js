@@ -39,7 +39,7 @@ export function useCreateProfile() {
   } = useMutation({
     mutationFn: async (data) => {
       const { bio, name, userHandle, pictureUrl } = data;
-      return fetch("api/create-profile", {
+      return fetch("/api/create-profile", {
         body: JSON.stringify({ bio, name, userHandle, pictureUrl }),
         method: "POST",
         credentials: "include",
@@ -79,7 +79,7 @@ export function useEditProfile() {
           ([_, value]) => value !== undefined && value !== null && value !== ""
         )
       );
-      return fetch("api/edit-profile", {
+      return fetch("/api/edit-profile", {
         body: JSON.stringify(body),
         method: "POST",
         credentials: "include",
