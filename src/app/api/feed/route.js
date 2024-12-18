@@ -12,8 +12,10 @@ export async function GET() {
   if (!isTokenVerified) {
     return NextResponse.json({ message: "Not Authorised" }, { status: 400 });
   }
+  const userId = isTokenVerified?.payload?.id;
+
   const currentUser = await prisma.profile.findUnique({
-    where: { userId: isTokenVerified?.payload?.id },
+    where: { userId },
     include: {
       currentUsers: true,
     },

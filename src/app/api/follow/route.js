@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   const { profileData } = await req.json();
-  console.log("ProfileData: ", profileData);
   const accessToken = cookies().get("accessToken")?.value;
   const isTokenVerified = await verify(accessToken);
   if (!isTokenVerified) {

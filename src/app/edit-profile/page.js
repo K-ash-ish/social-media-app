@@ -83,7 +83,6 @@ function ProfileForm() {
                 endpoint="imageUploader"
                 value
                 onClientUploadComplete={(res) => {
-                  console.log(res);
                   setPicture({ url: res[0].url, name: res[0].name });
                 }}
                 onUploadError={(error) => {

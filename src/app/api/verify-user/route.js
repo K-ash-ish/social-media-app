@@ -14,7 +14,6 @@ export async function GET() {
   }
 
   const { name, userHandle } = isTokenVerified.payload;
-  console.log(name, userHandle);
 
   return NextResponse.json(
     { message: "Success", data: { name, userHandle } },

@@ -13,7 +13,7 @@ function ProfilePage(props) {
   const [isFollowing, setIsFollowing] = useState(
     profileData?.isFollowing || false
   );
-  const followings = profileData?.currentUsers?.length;
+  const following = profileData?.currentUsers?.length;
   const followers = profileData?.following?.length;
   const { isPending, isSuccess, isError, mutate, data } = useMutation({
     mutationFn: async (data) => {
@@ -72,7 +72,7 @@ function ProfilePage(props) {
         <div className="flex flex-col justify-between border-b-2 pb-2 my-2">
           <p>{profileData?.bio}</p>
           <div className="text-xs text-gray-400  flex space-x-4 mt-1">
-            <span>Following: {followings || 0}</span>
+            <span>Following: {following || 0}</span>
             <span>Followers: {followers || 0}</span>
           </div>
           {isEditable && (

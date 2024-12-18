@@ -5,7 +5,6 @@ import { ProfileShimmer } from "@/components/ProfileShimmer";
 import { useUserProfile } from "@/hooks/useProfile";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
 function OtherUserProfile({ params }) {
   const { userHandle } = params;
   const { currentUser } = useAuth();

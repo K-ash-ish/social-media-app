@@ -19,6 +19,7 @@ export function PostCard({ id, userHandle, content }) {
 }
 function Feed() {
   const { allPosts, isAllPostLoading } = useAllPosts();
+
   if (isAllPostLoading) {
     return (
       <div className=" md:w-1/2 min-h-[83%] md:mx-auto flex flex-col gap-4  m-4  ">
