@@ -60,6 +60,7 @@ const AuthProvider = ({ children }) => {
       setCurrentUser({ name, userHandle });
       const route =
         (await loginData.message) === "Not Found" ? "/edit-profile" : "/";
+      router.refresh();
       return router.push(route);
     }
   };
@@ -90,16 +91,18 @@ const AuthProvider = ({ children }) => {
       setIsLoggedIn(true);
       setErrorMessage("");
       setCurrentUser({ name, userHandle });
+      router.refresh();
       return router.push("/edit-profile");
     }
   };
   const logout = async () => {
     const queryClient = getQueryClient();
-    const res = await fetch("/api/logout")
+    const res = await fetch("api/logout")
       .then((res) => res.json())
       .then((data) => data);
     if (res.message === "success") {
       setIsLoggedIn(false);
+      router.refresh();
       router.push("/login");
       return queryClient.resetQueries();
     }
