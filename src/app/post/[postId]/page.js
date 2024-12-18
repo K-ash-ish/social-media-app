@@ -41,12 +41,12 @@ function PostPage({ params }) {
     const channel = pusherClient.subscribe(postId);
     const queryClient = getQueryClient();
 
-    channel.bind("like-updates", (newLike) => {
+    channel.bind("like-updates", ({ likes }) => {
       queryClient.setQueryData(["likes", postId], (old) => ({
         ...old,
         data: {
           ...old?.data,
-          likes: newLike.likes,
+          likes,
         },
       }));
     });
