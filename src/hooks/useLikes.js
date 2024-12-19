@@ -1,3 +1,4 @@
+import { useAuth } from "@/app/context/AuthContext";
 import { getQueryClient } from "@/app/get-query-client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 const fetchLikes = async (postId) => {
@@ -24,7 +25,9 @@ const postLike = async (postId, like) => {
 
 export function useLikes(postId) {
   const queryClient = getQueryClient();
-
+  const {
+    currentUser: { profileId },
+  } = useAuth();
   const {
     data: likesData,
     isSuccess: isLikesSuccess,
@@ -34,8 +37,9 @@ export function useLikes(postId) {
     queryKey: ["likes", postId],
     queryFn: async () => fetchLikes(postId),
     select: (data) => {
+      const isLiked = data?.data?.isAlreadyLiked?.authorId === profileId;
       return {
-        isLiked: data?.data?.isLiked ?? false,
+        isLiked,
         count: data?.data?.likes,
       };
     },
@@ -47,6 +51,7 @@ export function useLikes(postId) {
     mutate: likeMutation,
     data: newLikeData,
   } = useMutation({
+    mutationKey: ["likes", postId],
     mutationFn: (like) => postLike(postId, like),
     onMutate: async (newLike) => {
       await queryClient.cancelQueries({
@@ -54,20 +59,37 @@ export function useLikes(postId) {
       });
       const previousLikesData = queryClient.getQueryData(["likes", postId]);
       queryClient.setQueryData(["likes", postId], (old) => {
-          
+        let likes, isAlreadyLiked;
+        const isLiked = old?.data?.isAlreadyLiked?.authorId === profileId;
+        if (isLiked) {
+          likes = old.data.likes - 1;
+          isAlreadyLiked = {};
+        } else {
+          likes = old.data.likes + 1;
+          isAlreadyLiked = {
+            id: new Date(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            postId,
+            authorId: profileId,
+          };
+        }
+
         return {
           ...old,
           data: {
-            isLiked: !old.data.isLiked,
-            likes: old.data.isLiked ? old.data?.likes - 1 : old.data?.likes + 1,
+            isAlreadyLiked,
+            likes,
           },
         };
       });
       return { previousLikesData };
     },
     onSuccess: (data) => {},
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["likes", postId] });
+    onSettled: async () => {
+      if (queryClient.isMutating({ mutationKey: ["comments", postId] })) {
+        await queryClient.invalidateQueries({ queryKey: ["likes", postId] });
+      }
     },
   });
   return {

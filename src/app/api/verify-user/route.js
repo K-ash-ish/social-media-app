@@ -12,11 +12,10 @@ export async function GET() {
   if (!isTokenVerified) {
     return NextResponse.json({ message: "Not Authorised" }, { status: 400 });
   }
-
-  const { name, userHandle } = isTokenVerified.payload;
+  const { name, userHandle, profileId, id } = isTokenVerified.payload;
 
   return NextResponse.json(
-    { message: "Success", data: { name, userHandle } },
+    { message: "Success", data: { name, userHandle, profileId, id } },
     { status: 200 }
   );
 }

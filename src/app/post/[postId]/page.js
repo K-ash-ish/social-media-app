@@ -1,4 +1,5 @@
 "use client";
+import { useAuth } from "@/app/context/AuthContext";
 import { getQueryClient } from "@/app/get-query-client";
 import { Comment, CommentShimmer } from "@/components/Comment";
 import { Button } from "@/components/ui/button";
@@ -40,18 +41,18 @@ function PostPage({ params }) {
   useEffect(() => {
     const channel = pusherClient.subscribe(postId);
     const queryClient = getQueryClient();
-
-    channel.bind("like-updates", ({ likes }) => {
-      queryClient.setQueryData(["likes", postId], (old) => ({
-        ...old,
-        data: {
-          ...old?.data,
-          likes,
-        },
-      }));
+    channel.bind("like-updates", (likes) => {
+      queryClient.setQueryData(["likes", postId], (old) => {
+        return {
+          ...old,
+          data: {
+            ...old.data,
+            likes: likes.likes,
+          },
+        };
+      });
     });
     channel.bind("comment-updates", ({ newComment }) => {
-      console.log(newComment);
       queryClient.setQueryData(["comments", postId], (old) => {
         return {
           ...old,

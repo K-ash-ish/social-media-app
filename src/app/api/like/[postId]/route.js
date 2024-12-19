@@ -23,9 +23,6 @@ export async function GET(req, context) {
         where: {
           authorId: isTokenVerified?.payload?.profileId,
         },
-        select: {
-          id: true,
-        },
         take: 1,
       },
     },
@@ -33,32 +30,21 @@ export async function GET(req, context) {
 
   const {
     _count: { Like: likes },
+    Like: isAlreadyLiked,
   } = likesData;
-  const isAlreadyLiked = likesData?.Like?.length > 0;
-
-  pusherServer.trigger(postId, "like-updates", { likes });
-
-  if (isAlreadyLiked) {
-    return NextResponse.json(
-      {
-        message: "Likes fetched successfully",
-        data: { isLiked: true, likes },
-      },
-      { status: 200 }
-    );
-  }
 
   return NextResponse.json({
     message: "Likes fetched successfully",
     data: {
       likes,
-      isLiked: false,
+      isAlreadyLiked: isAlreadyLiked[0] ?? {},
     },
   });
 }
 export async function POST(req) {
   const { postId } = await req.json();
   const accessToken = cookies().get("accessToken")?.value;
+  let isAlreadyLikedData, responseMessage;
   if (!accessToken) {
     return NextResponse.json({ message: "Not Authorised" }, { status: 400 });
   }
@@ -89,25 +75,44 @@ export async function POST(req) {
         id: isAlreadyLiked.id,
       },
     });
-    return NextResponse.json(
-      { message: "Like removed", isLiked: false },
-      { status: 200 }
-    );
+    responseMessage = "Like removed";
+    isAlreadyLikedData = {};
+  } else {
+    try {
+      const newLike = await prisma.like.create({
+        data: {
+          postId: Number(postId),
+          authorId: isTokenVerified?.payload?.profileId,
+        },
+      });
+      responseMessage = "Like added";
+      isAlreadyLikedData = newLike;
+    } catch (error) {
+      console.log(error);
+      return NextResponse.json({
+        error: "Something Went wrong",
+        isLiked: false,
+      });
+    }
   }
+  const likesData = await prisma.post.findUnique({
+    where: { id: Number(postId) },
+    select: {
+      _count: { select: { Like: true } },
+    },
+  });
+  const {
+    _count: { Like: likes },
+  } = likesData;
 
-  try {
-    const newLike = await prisma.like.create({
-      data: {
-        postId: Number(postId),
-        authorId: isTokenVerified?.payload?.profileId,
-      },
-    });
-    return NextResponse.json(
-      { message: "Like added", isLiked: true },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json({ error: "Something Went wrong", isLiked: false });
-  }
+  pusherServer.trigger(postId, "like-updates", {
+    likes,
+  });
+  return NextResponse.json({
+    message: responseMessage,
+    data: {
+      likes,
+      isAlreadyLiked: isAlreadyLikedData,
+    },
+  });
 }
