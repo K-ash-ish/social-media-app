@@ -1,7 +1,11 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAllPosts } from "@/hooks/usePost";
+import { pusherClient } from "@/lib/pusher";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useAuth } from "./context/AuthContext";
+import { getQueryClient } from "./get-query-client";
 
 export function PostCard({ id, userHandle, content }) {
   return (
@@ -19,6 +23,26 @@ export function PostCard({ id, userHandle, content }) {
 }
 function Feed() {
   const { allPosts, isAllPostLoading } = useAllPosts();
+  const { currentUser } = useAuth();
+  const profileId = currentUser?.profileId;
+
+  useEffect(() => {
+    const queryClient = getQueryClient();
+    const channel = pusherClient.subscribe(`user-${profileId}`);
+
+    channel.bind("new-post", async ({ newPost }) => {
+      await queryClient.setQueryData(["feedPost"], (old) => {
+        return {
+          ...old,
+          data: [...(old?.data ?? []), newPost],
+        };
+      });
+    });
+    return () => {
+      pusherClient.unsubscribe(`user-${profileId}`);
+      channel.unbind("new-post");
+    };
+  }, [profileId]);
 
   if (isAllPostLoading) {
     return (

@@ -9,6 +9,22 @@ const fetchPost = async (postId) => {
     .then((data) => data);
   return data;
 };
+const creatPost = async (title, content) => {
+  const data = await fetch("/api/create-post", {
+    body: JSON.stringify({
+      title,
+      content,
+    }),
+    method: "POST",
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => data)
+    .catch((e) => {
+      console.error(e);
+    });
+  return data;
+};
 
 export function useIndividualPost(postId) {
   const {
@@ -40,22 +56,7 @@ export function useAllPosts() {
   });
   return { isALlPostPending, isAllPostError, isAllPostLoading, allPosts };
 }
-const creatPost = async (title, content) => {
-  const data = await fetch("/api/create-post", {
-    body: JSON.stringify({
-      title,
-      content,
-    }),
-    method: "POST",
-    credentials: "include",
-  })
-    .then((res) => res.json())
-    .then((data) => data)
-    .catch((e) => {
-      console.error(e);
-    });
-  return data;
-};
+
 export function useCreatePost() {
   const queryClient = getQueryClient();
   const router = useRouter();

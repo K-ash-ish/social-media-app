@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { verify } from "@/lib/jwt";
+import { pusherServer } from "@/lib/pusher";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -22,6 +23,21 @@ export async function POST(req) {
       content: content,
     },
   });
+  const followerData = await prisma.profile.findMany({
+    where: {
+      id: profileId,
+    },
+    include: {
+      following: true,
+      currentUsers: true,
+    },
+  });
+  const followers = followerData[0].following;
+  for (const follower of followers) {
+    await pusherServer.trigger(`user-${follower.currentUserId}`, "new-post", {
+      newPost,
+    });
+  }
   return NextResponse.json(
     {
       message: "Success",
