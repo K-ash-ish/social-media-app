@@ -22,6 +22,9 @@ export async function POST(req) {
       title: title,
       content: content,
     },
+    include: {
+      author: { select: { name: true, userHandle: true } },
+    },
   });
   const followerData = await prisma.profile.findMany({
     where: {
