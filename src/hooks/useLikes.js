@@ -87,7 +87,7 @@ export function useLikes(postId) {
     },
     onSuccess: (data) => {},
     onSettled: async () => {
-      if (queryClient.isMutating({ mutationKey: ["comments", postId] })) {
+      if (queryClient.isMutating({ mutationKey: ["likes", postId] })) {
         await queryClient.invalidateQueries({ queryKey: ["likes", postId] });
       }
     },

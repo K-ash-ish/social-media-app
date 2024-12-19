@@ -47,17 +47,6 @@ export function useComments(postId) {
       await queryClient.cancelQueries({
         queryKey: ["comments", postId],
       });
-      const newComment = {
-        id: new Date(),
-        createdAt: new Date(),
-        content: comment,
-        author: {
-          name: "You",
-          userHandle: "You",
-        },
-      };
-      const previousComments = queryClient.getQueryData(["comments", postId]);
-      return { previousComments };
     },
     onSuccess: (data) => {},
     onSettled: async () => {

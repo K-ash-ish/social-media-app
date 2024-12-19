@@ -41,22 +41,22 @@ function PostPage({ params }) {
   useEffect(() => {
     const channel = pusherClient.subscribe(postId);
     const queryClient = getQueryClient();
-    channel.bind("like-updates", (likes) => {
-      queryClient.setQueryData(["likes", postId], (old) => {
+    channel.bind("like-updates", async ({ likes }) => {
+      await queryClient.setQueryData(["likes", postId], (old) => {
         return {
           ...old,
           data: {
             ...old.data,
-            likes: likes.likes,
+            likes,
           },
         };
       });
     });
-    channel.bind("comment-updates", ({ newComment }) => {
-      queryClient.setQueryData(["comments", postId], (old) => {
+    channel.bind("comment-updates", async ({ newComment }) => {
+      await queryClient.setQueryData(["comments", postId], (old) => {
         return {
           ...old,
-          data: [...old.data, newComment],
+          data: [...(old?.data ?? []), newComment],
         };
       });
     });
@@ -125,12 +125,13 @@ function PostPage({ params }) {
                     onClick={handleComment}
                     disabled={comment?.length === 0 || isNewComentPending}
                   >
-                    Comment
+                    {isNewComentPending ? "Posting..." : "Comment"}
                   </Button>
                 </div>
               </div>
             )}
           </>
+
           <h3 className="text-base font-semibold underline underline-offset-4 my-2  decoration-blue-400">
             Comments:
           </h3>
@@ -141,13 +142,6 @@ function PostPage({ params }) {
               commentsData?.data?.map((comment) => {
                 return <Comment key={comment.id} {...comment} />;
               })
-            )}
-            {isNewComentPending && (
-              <CommentShimmer
-                comment={commentVariables}
-                userHandle="You"
-                name="You"
-              />
             )}
           </ScrollArea>
         </CardContent>
