@@ -72,7 +72,7 @@ export async function POST(req) {
       },
     });
 
-    pusherServer.trigger(postId, "comment-updates", { newComment });
+    await pusherServer.trigger(postId, "comment-updates", { newComment });
 
     return NextResponse.json(
       { message: "Comment Added successfully", data: newComment },

@@ -105,7 +105,7 @@ export async function POST(req) {
     _count: { Like: likes },
   } = likesData;
 
-  pusherServer.trigger(postId, "like-updates", {
+  await pusherServer.trigger(postId, "like-updates", {
     likes,
   });
   return NextResponse.json({
